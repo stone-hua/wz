@@ -1,278 +1,229 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>【华哥】 - AI 商业架构师 | 赋能企业数字化转型</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .tech-gradient { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); }
-        .tech-text-gradient { background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .card-hover:hover { transform: translateY(-5px); transition: all 0.3s ease; box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.5); }
-    </style>
-</head>
-<body class="bg-slate-950 text-slate-200">
+import React, { useState } from 'react';
+import { 
+  User, BookOpen, Briefcase, MessageSquare, Phone, 
+  ChevronRight, Send, X, ExternalLink, Award, CheckCircle2
+} from 'lucide-react';
 
-    <!-- 导航栏 -->
-    <nav class="fixed w-full z-50 glass border-b border-white/5">
-        <div class="max-w-6xl mx-auto px-4 h-16 flex justify-between items-center">
-            <div class="text-xl font-black tracking-tighter text-white">
-                HUAGED<span class="text-blue-500">.AI</span>
-            </div>
-            <div class="hidden md:flex space-x-8 text-sm font-medium">
-                <a href="#about" class="hover:text-blue-400 transition">关于我</a>
-                <a href="#cases" class="hover:text-blue-400 transition">成功案例</a>
-                <a href="#products" class="hover:text-blue-400 transition">课程/产品</a>
-                <a href="#contact" class="hover:text-blue-400 transition">联系我们</a>
-            </div>
-            <button onclick="document.getElementById('lead-modal').classList.remove('hidden')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full text-xs font-bold transition">
-                免费领取资料
-            </button>
-        </div>
-    </nav>
+/**
+ * ==========================================
+ * 华哥，这里是你的【网站内容后台】
+ * 你只需要修改下面这个变量里的文字和链接即可！
+ * ==========================================
+ */
+const WEBSITE_DATA = {
+  personalInfo: {
+    name: "华哥",
+    title: "AI 商业架构师",
+    motto: "让 AI 成为老板的思维延伸，构建永不离职的数字员工团队。",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&h=200&fit=crop", // 替换为你的照片
+    fullBio: "深耕销售心理学与自动化技术多年，擅长将复杂的企业业务流程转化为 AI 逻辑流。通过 Dify + 自动化架构，已助力超过 100 家企业实现数字化转型。我不仅教技术，更教如何用 AI 降维打击竞争对手。",
+    wechatId: "Huage_AI_2026",
+    wechatQR: "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Huage_AI_2026" // 替换为你的微信二维码图
+  },
+  // 产品服务
+  products: [
+    {
+      id: 1,
+      title: "AI 商业架构实战营",
+      price: "¥ 9,980",
+      tag: "2天1夜 / 线下",
+      summary: "从思维到落地，带走 5 套工业级智能体。",
+      detail: "这门课专门为老板设计。我们会现场拆解你的业务，并手把手教你如何用 Dify 搭建出属于你的销冠智能体。包含 21 天陪跑和终身复训权。"
+    },
+    {
+      id: 2,
+      title: "Dify 智能体代建",
+      price: "¥ 49,800",
+      tag: "企业级 / 定制",
+      summary: "全流程自动化闭环设计，私有化部署。",
+      detail: "我们团队将深度介入你的业务，为你量身定制一套 Dify 工作流。从获客、初筛、分配到跟进，全自动化运行，数据实时同步 Google Sheets。"
+    }
+  ],
+  // 成功案例
+  cases: [
+    {
+      id: 1,
+      title: "房产销冠分身系统",
+      client: "某大型置业公司",
+      result: "成交转化率提升 400%",
+      detail: "我们将该公司的销冠谈单记录进行脱敏训练，构建了 Dify 引导模型。现在新人入职第一天就能达到老销售 80% 的谈单水平。"
+    },
+    {
+      id: 2,
+      title: "心理督导 AI 自动化",
+      client: "领航心理机构",
+      result: "人力成本降低 80%",
+      detail: "实现了咨询记录的自动摘要、专业督导建议生成及代理商授权额度的全自动核销管理。"
+    }
+  ],
+  // 文章/动态
+  articles: [
+    { id: 1, date: "2026-01-10", title: "为什么老板必须掌握 AI 架构思维？", content: "这里是文章的详细内容... AI 时代，老板不再需要卷体力，而是需要卷逻辑..." },
+    { id: 2, date: "2026-01-08", title: "如何用 Dify 重构你的销售漏斗？", content: "销售漏斗的第一步是获客。通过 AI 智能体在前端进行 24 小时响应..." }
+  ]
+};
 
-    <!-- 主视觉区 -->
-    <section class="pt-32 pb-20 px-4">
-        <div class="max-w-4xl mx-auto text-center">
-            <div class="inline-block px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-bold mb-6 animate-pulse">
-                2026 AI 商业化领航者
-            </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
-                让 AI 成为你的 <span class="tech-text-gradient">数字化销冠</span>
-            </h1>
-            <p class="text-slate-400 text-lg md:text-xl mb-10 leading-relaxed">
-                【你的个人一句话简介：例如：专注 Dify + 自动化架构，助力企业构建永不离职的数字员工团队。】
-            </p>
-            <div class="flex flex-col md:flex-row justify-center gap-4">
-                <a href="#products" class="tech-gradient text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-blue-500/20">查看产品详情</a>
-                <a href="#cases" class="bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-2xl font-bold text-lg transition">了解成功案例</a>
-            </div>
-        </div>
-    </section>
+export default function App() {
+  const [modalContent, setModalContent] = useState(null); // 控制详情弹窗
+  const [leadForm, setLeadForm] = useState({ name: '', phone: '' });
+  const [submitted, setSubmitted] = useState(false);
 
-    <!-- 个人介绍 -->
-    <section id="about" class="py-20 bg-slate-900/50">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div class="relative">
-                    <div class="aspect-square rounded-3xl overflow-hidden border-2 border-blue-500/20 shadow-2xl">
-                        <!-- 华哥照片占位 -->
-                        <div class="w-full h-full bg-slate-800 flex items-center justify-center text-slate-500 italic">
-                            
-                        </div>
-                    </div>
-                    <div class="absolute -bottom-6 -right-6 glass p-6 rounded-2xl shadow-xl">
-                        <p class="text-3xl font-bold text-white">100+</p>
-                        <p class="text-xs text-slate-400">企业 AI 落地经验</p>
-                    </div>
-                </div>
-                <div>
-                    <h2 class="text-3xl font-bold text-white mb-6">我是华哥</h2>
-                    <p class="text-slate-400 mb-6 leading-relaxed">
-                        【这里填入你的个人背景介绍。例如：深耕销售心理学与自动化技术，通过 AI 逻辑重构企业获客与管理流程。我坚信 AI 不仅是工具，更是老板的思维延伸。】
-                    </p>
-                    <ul class="space-y-4">
-                        <li class="flex items-center gap-3">
-                            <i class="fas fa-check-circle text-blue-500"></i>
-                            <span>精通 Dify 工业级工作流搭建</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fas fa-check-circle text-blue-500"></i>
-                            <span>独创“AI 督导+实时看板”管理闭环</span>
-                        </li>
-                        <li class="flex items-center gap-3">
-                            <i class="fas fa-check-circle text-blue-500"></i>
-                            <span>助力多家企业实现 300% 提效</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
+  const handleLeadSubmit = (e) => {
+    e.preventDefault();
+    console.log("捕获到新潜客:", leadForm);
+    // 这里未来可以接入 API 存入 Google Sheets
+    setSubmitted(true);
+    setTimeout(() => { setSubmitted(false); setLeadForm({ name: '', phone: '' }); }, 5000);
+  };
 
-    <!-- 成功案例 - 修改为垂直排列 -->
-    <section id="cases" class="py-20">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-white mb-12 text-center">成功案例</h2>
-            <div class="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
-                <!-- 案例 1 -->
-                <div class="glass p-8 rounded-3xl card-hover flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
-                    <div class="w-16 h-16 shrink-0 rounded-2xl tech-gradient flex items-center justify-center shadow-lg">
-                        <i class="fas fa-home text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-bold mb-3 text-white">房地产销冠分身</h3>
-                        <p class="text-base text-slate-400 leading-relaxed mb-4">通过 Dify 内化 Top 5% 销冠话术，实现 24 小时自动获客与意向初筛，让流量转化实现自动化流水线作业。</p>
-                        <span class="px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-sm font-bold">提效 400% +</span>
-                    </div>
-                </div>
-                <!-- 案例 2 -->
-                <div class="glass p-8 rounded-3xl card-hover flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
-                    <div class="w-16 h-16 shrink-0 rounded-2xl bg-emerald-600 flex items-center justify-center shadow-lg">
-                        <i class="fas fa-brain text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-bold mb-3 text-white">心理咨询 AI 督导</h3>
-                        <p class="text-base text-slate-400 leading-relaxed mb-4">自动化处理咨询记录，生成专业督导分析报告，数据实时同步 Google Sheets，大幅减轻专家文案负担。</p>
-                        <span class="px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-bold">节省人力 80%</span>
-                    </div>
-                </div>
-                <!-- 案例 3 -->
-                <div class="glass p-8 rounded-3xl card-hover flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
-                    <div class="w-16 h-16 shrink-0 rounded-2xl bg-purple-600 flex items-center justify-center shadow-lg">
-                        <i class="fas fa-users text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-bold mb-3 text-white">代理体系自动化管理</h3>
-                        <p class="text-base text-slate-400 leading-relaxed mb-4">构建分级授权与利益结算系统，让 1000+ 代理商实现无感管理与自动分润，从琐事中彻底解放老板。</p>
-                        <span class="px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-sm font-bold">管理 0 成本</span>
-                    </div>
-                </div>
-            </div>
+  const Modal = ({ content, onClose }) => (
+    <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-slate-900 border border-white/10 w-full max-w-lg rounded-3xl p-8 relative animate-in zoom-in-95">
+        <button onClick={onClose} className="absolute top-6 right-6 text-slate-400 hover:text-white">
+          <X size={24} />
+        </button>
+        <div className="mt-4 text-left">
+          <span className="text-blue-500 text-xs font-bold uppercase tracking-widest">{content.tag || '详情'}</span>
+          <h3 className="text-2xl font-bold text-white mt-2 mb-4">{content.title}</h3>
+          <div className="text-slate-400 leading-relaxed space-y-4 whitespace-pre-wrap">
+            {content.detail || content.content || "暂无更多详细描述。"}
+          </div>
         </div>
-    </section>
-
-    <!-- 产品/课程信息 - 修改为垂直排列 -->
-    <section id="products" class="py-20 bg-blue-600/5">
-        <div class="max-w-6xl mx-auto px-4">
-            <h2 class="text-3xl font-bold text-white mb-12 text-center">产品与服务</h2>
-            <div class="grid grid-cols-1 gap-10 max-w-xl mx-auto">
-                <!-- 线下课 -->
-                <div class="relative glass p-10 rounded-[2.5rem] border-2 border-white/5 shadow-xl">
-                    <div class="text-center">
-                        <p class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-4">2天1夜实战营</p>
-                        <h3 class="text-3xl font-bold text-white mb-4">AI 商业架构师</h3>
-                        <p class="text-4xl font-black mb-8">¥ 9,980</p>
-                        <ul class="text-base text-slate-400 space-y-4 mb-10 text-left px-4">
-                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 5 套工业级智能体</li>
-                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 销冠话术内化方法论</li>
-                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 现场获得 24h 自动化系统</li>
-                        </ul>
-                        <button onclick="document.getElementById('lead-modal').classList.remove('hidden')" class="w-full py-5 rounded-2xl border border-blue-500 text-blue-400 font-bold hover:bg-blue-500 hover:text-white transition-all text-lg">立即预约席位</button>
-                    </div>
-                </div>
-                <!-- 代建服务 -->
-                <div class="relative glass p-10 rounded-[2.5rem] border-2 border-blue-500 shadow-blue-500/20 shadow-2xl scale-105 z-10">
-                    <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">推荐</div>
-                    <div class="text-center">
-                        <p class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-4">企业级定制</p>
-                        <h3 class="text-3xl font-bold text-white mb-4">Dify 智能体代建</h3>
-                        <p class="text-4xl font-black mb-8">¥ 49,800</p>
-                        <ul class="text-base text-slate-400 space-y-4 mb-10 text-left px-4">
-                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 全流程自动化闭环设计</li>
-                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 私有化部署与域名绑定</li>
-                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 核心 Prompt 深度调优</li>
-                        </ul>
-                        <button onclick="document.getElementById('lead-modal').classList.remove('hidden')" class="w-full py-5 rounded-2xl tech-gradient text-white font-bold shadow-lg text-lg">获取代建方案</button>
-                    </div>
-                </div>
-                <!-- 定制服务 -->
-                <div class="relative glass p-10 rounded-[2.5rem] border-2 border-white/5 shadow-xl">
-                    <div class="text-center">
-                        <p class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-4">战略级伙伴</p>
-                        <h3 class="text-3xl font-bold text-white mb-4">智能体全案定制</h3>
-                        <p class="text-4xl font-black mb-8">¥ 99,800 <span class="text-lg font-normal text-slate-500">起</span></p>
-                        <ul class="text-base text-slate-400 space-y-4 mb-10 text-left px-4">
-                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 行业级大数据清洗与建模</li>
-                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 代理体系/财务系统深度集成</li>
-                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 华哥亲自带队全年陪跑</li>
-                        </ul>
-                        <button onclick="document.getElementById('lead-modal').classList.remove('hidden')" class="w-full py-5 rounded-2xl border border-white/10 text-white font-bold hover:bg-white/5 transition-all text-lg">申请定制咨询</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 联系方式 -->
-    <section id="contact" class="py-20">
-        <div class="max-w-4xl mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold text-white mb-8">准备好开启你的 AI 时代了吗？</h2>
-            <div class="glass p-10 rounded-[3rem] shadow-2xl">
-                <p class="text-slate-400 mb-8 font-medium">扫码或添加微信，开启你的企业数字化转型第一步</p>
-                <div class="flex flex-col md:flex-row items-center justify-center gap-10">
-                    <div class="w-48 h-48 bg-white p-2 rounded-2xl shadow-xl">
-                        <!-- 微信二维码占位 -->
-                        <div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs text-center p-4 italic">
-                            
-                        </div>
-                    </div>
-                    <div class="text-left space-y-4">
-                        <div class="flex items-center gap-4 text-lg">
-                            <i class="fab fa-weixin text-green-500 w-6"></i>
-                            <span class="font-bold">微信：【你的微信号】</span>
-                        </div>
-                        <div class="flex items-center gap-4 text-lg">
-                            <i class="fas fa-envelope text-blue-500 w-6"></i>
-                            <span class="font-bold">邮箱：【你的邮箱】</span>
-                        </div>
-                        <div class="flex items-center gap-4 text-lg">
-                            <i class="fas fa-location-dot text-red-500 w-6"></i>
-                            <span class="font-bold">地址：【你的办公地】</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- 留资弹窗 -->
-    <div id="lead-modal" class="fixed inset-0 z-[100] hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-        <div class="glass w-full max-w-md p-8 rounded-[2rem] shadow-2xl relative">
-            <button onclick="document.getElementById('lead-modal').classList.add('hidden')" class="absolute top-6 right-6 text-slate-400 hover:text-white">
-                <i class="fas fa-times text-xl"></i>
-            </button>
-            <div class="text-center mb-8">
-                <div class="w-16 h-16 tech-gradient rounded-2xl flex items-center justify-center text-white mx-auto mb-4">
-                    <i class="fas fa-cloud-download-alt text-2xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white">一键领取内部资料</h3>
-                <p class="text-xs text-slate-500 mt-2">《2026 企业 AI 落地避坑指南》PDF</p>
-            </div>
-            <form id="lead-form" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 text-left px-1">手机号 / 微信</label>
-                    <input type="text" id="phone" required class="w-full h-14 bg-slate-800 border-none rounded-2xl px-4 text-white font-bold outline-none ring-2 ring-transparent focus:ring-blue-500 transition-all" placeholder="请输入您的联系方式">
-                </div>
-                <button type="submit" class="w-full h-14 tech-gradient text-white rounded-2xl font-black text-sm shadow-lg shadow-blue-500/20 active:scale-95 transition-all">
-                    立即获取下载链接
-                </button>
-                <p class="text-[10px] text-center text-slate-500">提交即代表同意接收华哥工作室的后续资讯服务</p>
-            </form>
-            <div id="success-msg" class="hidden text-center py-8">
-                <i class="fas fa-check-circle text-emerald-500 text-5xl mb-4"></i>
-                <p class="text-xl font-bold text-white">申请已提交！</p>
-                <p class="text-sm text-slate-400 mt-2 italic">请关注手机短信或微信，资料将在 5 分钟内发送。</p>
-            </div>
-        </div>
+      </div>
     </div>
+  );
 
-    <!-- 页脚 -->
-    <footer class="py-12 border-t border-white/5 text-center text-slate-500 text-sm">
-        <p>&copy; 2026 HUAGED.AI 华哥工作室 版权所有</p>
-    </footer>
+  return (
+    <div className="min-h-screen bg-slate-950 text-slate-200 font-sans pb-20">
+      {/* 顶部导航 */}
+      <nav className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-md border-b border-white/5">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex justify-between items-center">
+          <div className="text-xl font-black tracking-tighter text-white">HUAGED<span className="text-blue-500">.AI</span></div>
+          <button onClick={() => setModalContent({ title: "领取资料", detail: "请填写下方表单，系统将自动发送资料到您的手机。" })} className="bg-blue-600 text-white px-4 py-2 rounded-full text-xs font-bold">资料领取</button>
+        </div>
+      </nav>
 
-    <script>
-        // 留资表单提交处理
-        document.getElementById('lead-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const phone = document.getElementById('phone').value;
-            console.log("提交留资信息:", phone);
-            
-            this.classList.add('hidden');
-            document.getElementById('success-msg').classList.remove('hidden');
-            
-            setTimeout(() => {
-                document.getElementById('lead-modal').classList.add('hidden');
-                this.classList.remove('hidden');
-                document.getElementById('success-msg').classList.add('hidden');
-                document.getElementById('phone').value = '';
-            }, 5000);
-        });
-    </script>
-</body>
-</html>
+      {/* Hero 区域 + 留资表单 */}
+      <section className="pt-32 pb-16 px-6 text-center">
+        <div className="max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold mb-6">
+            <Sparkles size={14} /> 2026 AI 商业领航
+          </div>
+          <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight">
+            我是{WEBSITE_DATA.personalInfo.name}，<br/><span className="bg-gradient-to-r from-blue-400 to-indigo-400 bg-clip-text text-transparent">用 AI 重构你的生意</span>
+          </h1>
+          <p className="text-slate-400 text-lg mb-10">{WEBSITE_DATA.personalInfo.motto}</p>
+
+          {/* 留资框 */}
+          <div className="bg-slate-900 border border-white/10 p-6 rounded-[2rem] shadow-2xl max-w-md mx-auto">
+            {!submitted ? (
+              <form onSubmit={handleLeadSubmit} className="space-y-4">
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <input 
+                    type="text" placeholder="您的姓名" required 
+                    className="flex-1 bg-slate-800 border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500"
+                    value={leadForm.name} onChange={e => setLeadForm({...leadForm, name: e.target.value})}
+                  />
+                  <input 
+                    type="tel" placeholder="手机号" required 
+                    className="flex-1 bg-slate-800 border-none rounded-2xl px-4 py-3 text-sm focus:ring-2 focus:ring-blue-500"
+                    value={leadForm.phone} onChange={e => setLeadForm({...leadForm, phone: e.target.value})}
+                  />
+                </div>
+                <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl transition-all flex items-center justify-center gap-2">
+                  立即领取《AI 落地红利指南》 <Send size={16} />
+                </button>
+                <p className="text-[10px] text-slate-500">资料包含 Dify 避坑指南及 5 个高价值 Prompt 模板</p>
+              </form>
+            ) : (
+              <div className="py-4 text-emerald-400 font-bold flex flex-col items-center gap-2">
+                <CheckCircle2 size={32} /> 提交成功！资料已发送至手机。
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* 模块：个人介绍 */}
+      <section className="px-6 py-12 max-w-3xl mx-auto">
+        <div className="flex items-center gap-4 mb-8">
+           <div className="w-12 h-1 text-blue-500 bg-blue-500 rounded-full"></div>
+           <h2 className="text-2xl font-bold text-white">关于我</h2>
+        </div>
+        <div className="bg-slate-900/50 p-6 rounded-3xl border border-white/5 flex flex-col items-center md:flex-row md:items-start gap-6">
+          <img src={WEBSITE_DATA.personalInfo.avatar} className="w-24 h-24 rounded-2xl object-cover grayscale hover:grayscale-0 transition-all" alt="Avatar" />
+          <div className="text-center md:text-left">
+            <h3 className="text-xl font-bold text-white mb-2">{WEBSITE_DATA.personalInfo.name} · {WEBSITE_DATA.personalInfo.title}</h3>
+            <p className="text-slate-400 text-sm leading-relaxed line-clamp-3 mb-4">{WEBSITE_DATA.personalInfo.fullBio}</p>
+            <button onClick={() => setModalContent({ title: "关于我", detail: WEBSITE_DATA.personalInfo.fullBio })} className="text-blue-500 text-sm font-bold flex items-center gap-1 mx-auto md:mx-0">查看详细履历 <ChevronRight size={14}/></button>
+          </div>
+        </div>
+      </section>
+
+      {/* 模块：产品服务 */}
+      <section className="px-6 py-12 max-w-3xl mx-auto">
+        <div className="flex items-center gap-4 mb-8 text-right flex-row-reverse">
+           <div className="w-12 h-1 text-indigo-500 bg-indigo-500 rounded-full"></div>
+           <h2 className="text-2xl font-bold text-white">产品服务</h2>
+        </div>
+        <div className="space-y-4">
+          {WEBSITE_DATA.products.map(p => (
+            <div key={p.id} className="bg-slate-900 p-6 rounded-3xl border border-white/5 hover:border-blue-500/30 transition-all group">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="text-xl font-bold text-white">{p.title}</h3>
+                <span className="text-blue-500 font-black">{p.price}</span>
+              </div>
+              <p className="text-slate-400 text-sm mb-4">{p.summary}</p>
+              <button onClick={() => setModalContent(p)} className="text-xs font-bold text-slate-500 group-hover:text-white flex items-center gap-1">查看服务详情 <ExternalLink size={12}/></button>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 模块：成功案例 */}
+      <section className="px-6 py-12 max-w-3xl mx-auto bg-blue-600/5 rounded-[3rem]">
+        <h2 className="text-2xl font-bold text-white mb-8 text-center">成功案例</h2>
+        <div className="space-y-4">
+          {WEBSITE_DATA.cases.map(c => (
+            <div key={c.id} className="bg-slate-950 p-6 rounded-3xl border border-white/5 flex justify-between items-center group active:scale-95 transition-all cursor-pointer" onClick={() => setModalContent(c)}>
+              <div>
+                <p className="text-[10px] text-blue-500 font-bold uppercase mb-1">{c.client}</p>
+                <h3 className="text-lg font-bold text-white">{c.title}</h3>
+                <p className="text-xs text-emerald-400 mt-1 font-bold">{c.result}</p>
+              </div>
+              <div className="w-10 h-10 rounded-full bg-slate-900 flex items-center justify-center text-slate-600 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                <ChevronRight size={20} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 模块：个人文章 */}
+      <section className="px-6 py-12 max-w-3xl mx-auto">
+        <h2 className="text-2xl font-bold text-white mb-8">深度思考</h2>
+        <div className="grid grid-cols-1 gap-4">
+          {WEBSITE_DATA.articles.map(a => (
+            <div key={a.id} className="flex gap-4 items-start p-4 hover:bg-white/5 rounded-2xl cursor-pointer" onClick={() => setModalContent(a)}>
+              <div className="text-xs text-slate-600 font-mono pt-1">{a.date}</div>
+              <div className="font-bold text-slate-300 hover:text-blue-400 transition-colors underline decoration-white/10 underline-offset-4">{a.title}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 模块：联系我们 */}
+      <section className="px-6 py-12 max-w-3xl mx-auto text-center border-t border-white/5">
+        <h2 className="text-2xl font-bold text-white mb-4">联系华哥</h2>
+        <div className="bg-white p-4 inline-block rounded-2xl mb-4">
+          <img src={WEBSITE_DATA.personalInfo.wechatQR} className="w-32 h-32" alt="QR" />
+        </div>
+        <p className="text-sm text-slate-400 mb-2 font-mono">微信号：{WEBSITE_DATA.personalInfo.wechatId}</p>
+        <p className="text-[10px] text-slate-600">扫码或搜索微信号，备注“官网咨询”</p>
+      </section>
+
+      {/* 详情弹窗渲染 */}
+      {modalContent && <Modal content={modalContent} onClose={() => setModalContent(null)} />}
+    </div>
+  );
+}
