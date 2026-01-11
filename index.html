@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>【华哥】 - AI 商业架构师 | 赋能企业数字化转型</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
+        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .tech-gradient { background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%); }
+        .tech-text-gradient { background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .card-hover:hover { transform: translateY(-5px); transition: all 0.3s ease; box-shadow: 0 10px 30px -10px rgba(59, 130, 246, 0.5); }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-200">
+
+    <!-- 导航栏 -->
+    <nav class="fixed w-full z-50 glass border-b border-white/5">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex justify-between items-center">
+            <div class="text-xl font-black tracking-tighter text-white">
+                HUAGED<span class="text-blue-500">.AI</span>
+            </div>
+            <div class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#about" class="hover:text-blue-400 transition">关于我</a>
+                <a href="#cases" class="hover:text-blue-400 transition">成功案例</a>
+                <a href="#products" class="hover:text-blue-400 transition">课程/产品</a>
+                <a href="#contact" class="hover:text-blue-400 transition">联系我们</a>
+            </div>
+            <button onclick="document.getElementById('lead-modal').classList.remove('hidden')" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-full text-xs font-bold transition">
+                免费领取资料
+            </button>
+        </div>
+    </nav>
+
+    <!-- 主视觉区 -->
+    <section class="pt-32 pb-20 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="inline-block px-4 py-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 text-blue-400 text-xs font-bold mb-6 animate-pulse">
+                2026 AI 商业化领航者
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight">
+                让 AI 成为你的 <span class="tech-text-gradient">数字化销冠</span>
+            </h1>
+            <p class="text-slate-400 text-lg md:text-xl mb-10 leading-relaxed">
+                【你的个人一句话简介：例如：专注 Dify + 自动化架构，助力企业构建永不离职的数字员工团队。】
+            </p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="#products" class="tech-gradient text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-blue-500/20">查看产品详情</a>
+                <a href="#cases" class="bg-slate-800 hover:bg-slate-700 text-white px-8 py-4 rounded-2xl font-bold text-lg transition">了解成功案例</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 个人介绍 -->
+    <section id="about" class="py-20 bg-slate-900/50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="relative">
+                    <div class="aspect-square rounded-3xl overflow-hidden border-2 border-blue-500/20 shadow-2xl">
+                        <!-- 华哥照片占位 -->
+                        <div class="w-full h-full bg-slate-800 flex items-center justify-center text-slate-500 italic">
+                            
+                        </div>
+                    </div>
+                    <div class="absolute -bottom-6 -right-6 glass p-6 rounded-2xl shadow-xl">
+                        <p class="text-3xl font-bold text-white">100+</p>
+                        <p class="text-xs text-slate-400">企业 AI 落地经验</p>
+                    </div>
+                </div>
+                <div>
+                    <h2 class="text-3xl font-bold text-white mb-6">我是华哥</h2>
+                    <p class="text-slate-400 mb-6 leading-relaxed">
+                        【这里填入你的个人背景介绍。例如：深耕销售心理学与自动化技术，通过 AI 逻辑重构企业获客与管理流程。我坚信 AI 不仅是工具，更是老板的思维延伸。】
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-blue-500"></i>
+                            <span>精通 Dify 工业级工作流搭建</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-blue-500"></i>
+                            <span>独创“AI 督导+实时看板”管理闭环</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-check-circle text-blue-500"></i>
+                            <span>助力多家企业实现 300% 提效</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 成功案例 - 修改为垂直排列 -->
+    <section id="cases" class="py-20">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-white mb-12 text-center">成功案例</h2>
+            <div class="grid grid-cols-1 gap-8 max-w-2xl mx-auto">
+                <!-- 案例 1 -->
+                <div class="glass p-8 rounded-3xl card-hover flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
+                    <div class="w-16 h-16 shrink-0 rounded-2xl tech-gradient flex items-center justify-center shadow-lg">
+                        <i class="fas fa-home text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-3 text-white">房地产销冠分身</h3>
+                        <p class="text-base text-slate-400 leading-relaxed mb-4">通过 Dify 内化 Top 5% 销冠话术，实现 24 小时自动获客与意向初筛，让流量转化实现自动化流水线作业。</p>
+                        <span class="px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-sm font-bold">提效 400% +</span>
+                    </div>
+                </div>
+                <!-- 案例 2 -->
+                <div class="glass p-8 rounded-3xl card-hover flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
+                    <div class="w-16 h-16 shrink-0 rounded-2xl bg-emerald-600 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-brain text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-3 text-white">心理咨询 AI 督导</h3>
+                        <p class="text-base text-slate-400 leading-relaxed mb-4">自动化处理咨询记录，生成专业督导分析报告，数据实时同步 Google Sheets，大幅减轻专家文案负担。</p>
+                        <span class="px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-bold">节省人力 80%</span>
+                    </div>
+                </div>
+                <!-- 案例 3 -->
+                <div class="glass p-8 rounded-3xl card-hover flex flex-col md:flex-row gap-6 items-center md:items-start text-center md:text-left">
+                    <div class="w-16 h-16 shrink-0 rounded-2xl bg-purple-600 flex items-center justify-center shadow-lg">
+                        <i class="fas fa-users text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-3 text-white">代理体系自动化管理</h3>
+                        <p class="text-base text-slate-400 leading-relaxed mb-4">构建分级授权与利益结算系统，让 1000+ 代理商实现无感管理与自动分润，从琐事中彻底解放老板。</p>
+                        <span class="px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-400 text-sm font-bold">管理 0 成本</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 产品/课程信息 - 修改为垂直排列 -->
+    <section id="products" class="py-20 bg-blue-600/5">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-3xl font-bold text-white mb-12 text-center">产品与服务</h2>
+            <div class="grid grid-cols-1 gap-10 max-w-xl mx-auto">
+                <!-- 线下课 -->
+                <div class="relative glass p-10 rounded-[2.5rem] border-2 border-white/5 shadow-xl">
+                    <div class="text-center">
+                        <p class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-4">2天1夜实战营</p>
+                        <h3 class="text-3xl font-bold text-white mb-4">AI 商业架构师</h3>
+                        <p class="text-4xl font-black mb-8">¥ 9,980</p>
+                        <ul class="text-base text-slate-400 space-y-4 mb-10 text-left px-4">
+                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 5 套工业级智能体</li>
+                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 销冠话术内化方法论</li>
+                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 现场获得 24h 自动化系统</li>
+                        </ul>
+                        <button onclick="document.getElementById('lead-modal').classList.remove('hidden')" class="w-full py-5 rounded-2xl border border-blue-500 text-blue-400 font-bold hover:bg-blue-500 hover:text-white transition-all text-lg">立即预约席位</button>
+                    </div>
+                </div>
+                <!-- 代建服务 -->
+                <div class="relative glass p-10 rounded-[2.5rem] border-2 border-blue-500 shadow-blue-500/20 shadow-2xl scale-105 z-10">
+                    <div class="absolute -top-5 left-1/2 -translate-x-1/2 bg-blue-500 text-white px-6 py-1.5 rounded-full text-xs font-black uppercase tracking-widest">推荐</div>
+                    <div class="text-center">
+                        <p class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-4">企业级定制</p>
+                        <h3 class="text-3xl font-bold text-white mb-4">Dify 智能体代建</h3>
+                        <p class="text-4xl font-black mb-8">¥ 49,800</p>
+                        <ul class="text-base text-slate-400 space-y-4 mb-10 text-left px-4">
+                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 全流程自动化闭环设计</li>
+                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 私有化部署与域名绑定</li>
+                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 核心 Prompt 深度调优</li>
+                        </ul>
+                        <button onclick="document.getElementById('lead-modal').classList.remove('hidden')" class="w-full py-5 rounded-2xl tech-gradient text-white font-bold shadow-lg text-lg">获取代建方案</button>
+                    </div>
+                </div>
+                <!-- 定制服务 -->
+                <div class="relative glass p-10 rounded-[2.5rem] border-2 border-white/5 shadow-xl">
+                    <div class="text-center">
+                        <p class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-4">战略级伙伴</p>
+                        <h3 class="text-3xl font-bold text-white mb-4">智能体全案定制</h3>
+                        <p class="text-4xl font-black mb-8">¥ 99,800 <span class="text-lg font-normal text-slate-500">起</span></p>
+                        <ul class="text-base text-slate-400 space-y-4 mb-10 text-left px-4">
+                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 行业级大数据清洗与建模</li>
+                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 代理体系/财务系统深度集成</li>
+                            <li class="flex items-center gap-3"><i class="fas fa-check text-blue-500"></i> 华哥亲自带队全年陪跑</li>
+                        </ul>
+                        <button onclick="document.getElementById('lead-modal').classList.remove('hidden')" class="w-full py-5 rounded-2xl border border-white/10 text-white font-bold hover:bg-white/5 transition-all text-lg">申请定制咨询</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系方式 -->
+    <section id="contact" class="py-20">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-3xl font-bold text-white mb-8">准备好开启你的 AI 时代了吗？</h2>
+            <div class="glass p-10 rounded-[3rem] shadow-2xl">
+                <p class="text-slate-400 mb-8 font-medium">扫码或添加微信，开启你的企业数字化转型第一步</p>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-10">
+                    <div class="w-48 h-48 bg-white p-2 rounded-2xl shadow-xl">
+                        <!-- 微信二维码占位 -->
+                        <div class="w-full h-full bg-slate-100 flex items-center justify-center text-slate-400 text-xs text-center p-4 italic">
+                            
+                        </div>
+                    </div>
+                    <div class="text-left space-y-4">
+                        <div class="flex items-center gap-4 text-lg">
+                            <i class="fab fa-weixin text-green-500 w-6"></i>
+                            <span class="font-bold">微信：【你的微信号】</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-lg">
+                            <i class="fas fa-envelope text-blue-500 w-6"></i>
+                            <span class="font-bold">邮箱：【你的邮箱】</span>
+                        </div>
+                        <div class="flex items-center gap-4 text-lg">
+                            <i class="fas fa-location-dot text-red-500 w-6"></i>
+                            <span class="font-bold">地址：【你的办公地】</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 留资弹窗 -->
+    <div id="lead-modal" class="fixed inset-0 z-[100] hidden bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="glass w-full max-w-md p-8 rounded-[2rem] shadow-2xl relative">
+            <button onclick="document.getElementById('lead-modal').classList.add('hidden')" class="absolute top-6 right-6 text-slate-400 hover:text-white">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            <div class="text-center mb-8">
+                <div class="w-16 h-16 tech-gradient rounded-2xl flex items-center justify-center text-white mx-auto mb-4">
+                    <i class="fas fa-cloud-download-alt text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white">一键领取内部资料</h3>
+                <p class="text-xs text-slate-500 mt-2">《2026 企业 AI 落地避坑指南》PDF</p>
+            </div>
+            <form id="lead-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 text-left px-1">手机号 / 微信</label>
+                    <input type="text" id="phone" required class="w-full h-14 bg-slate-800 border-none rounded-2xl px-4 text-white font-bold outline-none ring-2 ring-transparent focus:ring-blue-500 transition-all" placeholder="请输入您的联系方式">
+                </div>
+                <button type="submit" class="w-full h-14 tech-gradient text-white rounded-2xl font-black text-sm shadow-lg shadow-blue-500/20 active:scale-95 transition-all">
+                    立即获取下载链接
+                </button>
+                <p class="text-[10px] text-center text-slate-500">提交即代表同意接收华哥工作室的后续资讯服务</p>
+            </form>
+            <div id="success-msg" class="hidden text-center py-8">
+                <i class="fas fa-check-circle text-emerald-500 text-5xl mb-4"></i>
+                <p class="text-xl font-bold text-white">申请已提交！</p>
+                <p class="text-sm text-slate-400 mt-2 italic">请关注手机短信或微信，资料将在 5 分钟内发送。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="py-12 border-t border-white/5 text-center text-slate-500 text-sm">
+        <p>&copy; 2026 HUAGED.AI 华哥工作室 版权所有</p>
+    </footer>
+
+    <script>
+        // 留资表单提交处理
+        document.getElementById('lead-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const phone = document.getElementById('phone').value;
+            console.log("提交留资信息:", phone);
+            
+            this.classList.add('hidden');
+            document.getElementById('success-msg').classList.remove('hidden');
+            
+            setTimeout(() => {
+                document.getElementById('lead-modal').classList.add('hidden');
+                this.classList.remove('hidden');
+                document.getElementById('success-msg').classList.add('hidden');
+                document.getElementById('phone').value = '';
+            }, 5000);
+        });
+    </script>
+</body>
+</html>
