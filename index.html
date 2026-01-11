@@ -1,96 +1,67 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="scroll-smooth dark"> <!-- 默认深色 -->
+<html lang="zh-CN" class="scroll-smooth dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 智能体实战应用 | 华哥架构</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { dark: '#0f172a', light: '#ffffff' } } } }
+        // 强制深色配置
+        tailwind.config = { darkMode: 'class', theme: { extend: { colors: { dark: '#0f172a' } } } }
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* 基础 */
-        body { font-family: -apple-system, 'PingFang SC', sans-serif; transition: background-color 0.3s, color 0.3s; }
-        .dark body { background-color: #0f172a; color: #cbd5e1; }
-        .light body { background-color: #f8fafc; color: #1e293b; }
+        /* 全局强制深色 */
+        body { font-family: -apple-system, 'PingFang SC', sans-serif; background-color: #0f172a; color: #cbd5e1; }
 
         /* 导航栏 */
-        .glass-nav { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); transition: background-color 0.3s; }
-        .dark .glass-nav { background: rgba(15, 23, 42, 0.85); }
-        .light .glass-nav { background: rgba(255, 255, 255, 0.85); border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .glass-nav { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        /* ★★★ 新侧边栏 (移植自 2026版 + 收窄宽度) ★★★ */
-        #mobile-menu-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,0.3); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        /* 侧边栏 (保持不变) */
+        #mobile-menu-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         #mobile-menu-overlay.open { opacity: 1; pointer-events: auto; }
-
         #mobile-menu-panel {
-            position: fixed; top: 0; right: 0; bottom: 0; 
-            width: 260px; /* ★★★ 宽度调整为 260px ★★★ */
-            z-index: 91; padding: 2rem;
+            position: fixed; top: 0; right: 0; bottom: 0; width: 260px; z-index: 91; padding: 2rem;
+            background: rgba(30, 41, 59, 0.98); border-left: 1px solid rgba(255,255,255,0.1);
             transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             display: flex; flex-direction: column; justify-content: center;
         }
-        .dark #mobile-menu-panel { background: rgba(30, 41, 59, 0.98); border-left: 1px solid rgba(255,255,255,0.1); }
-        .light #mobile-menu-panel { background: rgba(255, 255, 255, 0.98); border-left: 1px solid rgba(0,0,0,0.1); box-shadow: -10px 0 30px rgba(0,0,0,0.1); }
         #mobile-menu-panel.open { transform: translateX(0); }
+        .menu-link { font-size: 1.1rem; font-weight: 600; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f8fafc; }
 
-        /* 菜单项动画 */
-        .menu-link { font-size: 1.1rem; font-weight: 600; padding: 1rem 0; border-bottom: 1px solid rgba(128,128,128,0.1); text-align: center; opacity: 0; transform: translateY(10px); transition: 0.3s; }
-        #mobile-menu-panel.open .menu-link { opacity: 1; transform: translateY(0); }
-        #mobile-menu-panel.open .menu-link:nth-child(1) { transition-delay: 0.1s; }
-        #mobile-menu-panel.open .menu-link:nth-child(2) { transition-delay: 0.15s; }
-        #mobile-menu-panel.open .menu-link:nth-child(3) { transition-delay: 0.2s; }
-        #mobile-menu-panel.open .menu-link:nth-child(4) { transition-delay: 0.25s; }
-
-        /* Hero 背景图 (保持 v2601112136 逻辑) */
+        /* Hero 背景图 */
         .hero-section { 
+            background-image: linear-gradient(to bottom, rgba(15,23,42,0.3), #0f172a), url('./images/banner.jpg'); 
             background-size: cover; background-position: center; min-height: 600px;
             display: flex; align-items: center; justify-content: center; position: relative;
         }
-        .dark .hero-section { background-image: linear-gradient(to bottom, rgba(15,23,42,0.4), #0f172a), url('./images/banner.jpg'); }
-        .light .hero-section { background-image: linear-gradient(to bottom, rgba(255,255,255,0.4), #f8fafc), url('./images/banner.jpg'); }
 
-        /* 弹窗遮罩 */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        /* 弹窗遮罩 & 动画 */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
         .modal-overlay.show { display: flex; animation: zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
-        #contact-modal { z-index: 10000; } 
         @keyframes zoomIn { from { transform: scale(0.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        
+        /* 弹窗防滚动核心类 */
+        body.modal-open { overflow: hidden; }
 
         /* 标题装饰 */
-        .section-title { position: relative; display: inline-block; margin-bottom: 3rem; font-size: 2rem; font-weight: 800; letter-spacing: 1px; }
-        .dark .section-title { color: #f8fafc; }
-        .light .section-title { color: #0f172a; }
+        .section-title { position: relative; display: inline-block; margin-bottom: 3rem; font-size: 2rem; font-weight: 800; color: #f8fafc; letter-spacing: 1px; }
         .section-title::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 2px; }
 
-        /* 卡片样式适配日夜 */
-        .dark-card { border-radius: 1.5rem; transition: all 0.3s ease; }
-        .dark .dark-card { background: #1e293b; border: 1px solid rgba(255,255,255,0.05); }
-        .light .dark-card { background: #ffffff; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .dark-card:hover { transform: translateY(-5px); }
-        .dark .dark-card:hover { box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3); background: #263346; }
-        .light .dark-card:hover { box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1); }
-        
-        /* 详情页排版 */
-        .article-body h3 { font-size: 1.2em; font-weight: bold; margin-top: 1.5em; margin-bottom: 0.8em; border-left: 4px solid #3b82f6; padding-left: 12px; }
-        .dark .article-body h3 { color: #e2e8f0; } .light .article-body h3 { color: #1e293b; }
-        .article-body p { margin-bottom: 1.2em; line-height: 1.8; text-align: justify; }
-        .dark .article-body p { color: #94a3b8; } .light .article-body p { color: #475569; }
+        /* 卡片样式 */
+        .dark-card { background: #1e293b; border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; }
+        .dark-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); background: #263346; border-color: rgba(255,255,255,0.1); }
 
-        /* 文字适配 */
-        .text-main { transition: color 0.3s; }
-        .dark .text-main { color: #f8fafc; } .light .text-main { color: #0f172a; }
-        .text-sub { transition: color 0.3s; }
-        .dark .text-sub { color: #94a3b8; } .light .text-sub { color: #64748b; }
-        
-        /* 弹窗背景适配 (苹果风头部) */
-        .modal-bg { transition: background 0.3s; border-radius: 1rem; overflow: hidden; display: flex; flex-direction: column; }
-        .dark .modal-bg { background: #1e293b; border: 1px solid rgba(255,255,255,0.1); }
-        .light .modal-bg { background: #ffffff; border: 1px solid rgba(0,0,0,0.1); }
-        
-        .modal-header { padding: 12px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid; position: sticky; top: 0; z-index: 20; }
-        .dark .modal-header { border-color: rgba(255,255,255,0.1); background: rgba(30,41,59,0.9); backdrop-filter: blur(10px); }
-        .light .modal-header { border-color: rgba(0,0,0,0.1); background: rgba(255,255,255,0.9); backdrop-filter: blur(10px); }
+        /* 课程大纲模块优化 */
+        .module-card { margin-bottom: 3rem; padding: 2rem; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
+        .module-card:last-child { margin-bottom: 0; }
+
+        /* 详情页排版 */
+        .article-body h3 { font-size: 1.2em; font-weight: bold; margin-top: 1.5em; margin-bottom: 0.8em; color: #e2e8f0; border-left: 4px solid #3b82f6; padding-left: 12px; }
+        .article-body p { margin-bottom: 1.2em; line-height: 1.8; color: #94a3b8; text-align: justify; }
+
+        /* 弹窗头部 */
+        .modal-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(30,41,59,0.95); position: sticky; top: 0; z-index: 20; }
     </style>
 </head>
 <body class="pt-16">
@@ -123,11 +94,11 @@
             },
 
             courseModules: [
-                { title: "第一模块：认知重构——破除思维牢笼", color: "text-blue-500", iconBg: "bg-blue-500/20", items: ["<b>财富的分水岭：</b>为什么别人把 AI 当玩具，而我用它当“数字印钞机”？", "<b>社会草台班子：</b>AI对个人、企业和社会，会有什么巨大影响和价值？", "<b>如何让 AI 理解你的需求：</b>大多数人感觉AI不好用，真实原因是什么？", "<b>如何让 AI 帮你做决策：</b>重大决策和战略选择，为什么一定要 AI 参与进来？", "<b>财富增量的必然：</b>AI 如何给个体和管理者，创造新的财富增量？", "<b>偏见与傲慢：</b>阻碍多数人用 AI变现 的三大错误观点是什么？", "<b>AI 的高手视角：</b>使用 AI 巨额变现 或 降本增效，需要哪些前置条件？"] },
-                { title: "第二模块：炼金秘诀——调教出好用智能体的硬核逻辑", color: "text-purple-500", iconBg: "bg-purple-500/20", items: ["<b>信任与许愿：</b>阻碍你变现的不是 AI 技术，而是“不敢要求”与“不信任”", "<b>避开认知巨坑：</b>深挖大部分人错过 AI 红利的原因，以及把握机会的正确姿势", "<b>落地 AI 的基本认知：</b>知识库、提示词、智能体的关系和区别？", "<b>数据分层技术：</b>如何通过数据分层，让 AI 成为 100% 懂你的 “数字大脑” ？", "<b>提示词逻辑：</b>如何用OKR管理法，引导并调教 AI 出色完成任务 ？", "<b>拒绝“教人做事”：</b>只谈目标、不谈过程的帝王级 AI 管理手段" ] },
-                { title: "第三模块：AI实战场——改变产业结构的应用场景", color: "text-emerald-500", iconBg: "bg-emerald-500/20", items: ["<b>内容流水线：</b>如何通过 AI 实现50倍速、全自动的产出高质量爆款内容？", "<b>资深面试官：</b>如何通过 AI 精准高效的招人、选人、留人、挖人？", "<b>数字分身克隆：</b>如何复刻自己的数字分身，7*24小时服务客户或辅导团队？", "<b>团队销冠助手：</b>如何通过 AI 实现公司全员秒变销冠？", "<b>团队能力对齐：</b>AI如何快速复刻医美、咨询等行业私域员工的销售能力？", "<b>专治团队刺头：</b>如何通过 AI ，加倍提升团队的整体能力和稳定性？", "<b>私人健康指导：</b>如何通过 AI 实现“菲佣”级的贴身健康指导服务？", "<b>面相性格穿透：</b>如何利用 AI 进行步态、面相与语料分析，掌握关系中的主动权？", "<b>伴侣咨询功能：</b>如何通过 AI 疗愈alpha型创业者，内心深处的创伤和盲区？"] },
-                { title: "第四模块：暗黑级应用——AI 辅助领袖掌控力暴增", color: "text-red-500", iconBg: "bg-red-500/20", items: ["<b>全息督察官：</b>如何用 AI 监督分公司、分店的的管理死角与乱象？", "<b>合规性核查：</b>如何用 AI 保障电销、医美或金融等行业的话术合规？", "<b>帝王决策术：</b>如何通过 AI 做出科学、精准的商业/管理等重大决策？", "<b>流程架构师：</b>如何通过AI 辅助团队进入自动运作模式，解放老板时间？", "<b>业务线拆解：</b>如何通过AI 深度研判复杂业务逻辑，找出核心节点？", "<b>跨部门协作：</b>如何通过AI 打通公司各部门之间的协作壁垒？", "<b>稳定性“审计”：</b>如何利用AI 实现垂直管理 3000 人的“领袖透视眼”？", "<b>防政变系统：</b>如何防止核心成员反水，避免老板面临马杜罗式结局？"] },
-                { title: "第五模块：财富终局——AI时代的跨界套利蓝图", color: "text-amber-500", iconBg: "bg-amber-500/20", items: ["<b>AI时代的思维：</b>能用 AI 实现极高变现的人，有哪些思维特征？", "<b>AI 带来的可能性：</b>有哪些领域，会因为AI 爆发巨大的财富机遇？", "<b>想象力是生产力：</b>如何通过“攻击”、“加密”与“禁忌话题”，提升你的 AI 使用力？", "<b>企业无感落地AI ：</b>无需全员费时费力学AI，3分钟即可落地企业的AI应用，长啥样？", "<b>AI 赋能百人企业：</b>年营收2亿的公司老板，为什么果断采用我的 AI 无感落地方案？", "<b>AI 效果的巩固：</b>如何持续让 AI 赋能个体或企业的增长？"] }
+                { title: "第一模块：认知重构——破除思维牢笼", color: "text-blue-500", iconBg: "bg-blue-500/10", items: ["<b>财富的分水岭：</b>为什么别人把 AI 当玩具，而我用它当“数字印钞机”？", "<b>社会草台班子：</b>AI对个人、企业和社会，会有什么巨大影响和价值？", "<b>如何让 AI 理解你的需求：</b>大多数人感觉AI不好用，真实原因是什么？", "<b>如何让 AI 帮你做决策：</b>重大决策和战略选择，为什么一定要 AI 参与进来？", "<b>财富增量的必然：</b>AI 如何给个体和管理者，创造新的财富增量？", "<b>偏见与傲慢：</b>阻碍多数人用 AI变现 的三大错误观点是什么？", "<b>AI 的高手视角：</b>使用 AI 巨额变现 或 降本增效，需要哪些前置条件？"] },
+                { title: "第二模块：炼金秘诀——调教出好用智能体的硬核逻辑", color: "text-purple-500", iconBg: "bg-purple-500/10", items: ["<b>信任与许愿：</b>阻碍你变现的不是 AI 技术，而是“不敢要求”与“不信任”", "<b>避开认知巨坑：</b>深挖大部分人错过 AI 红利的原因，以及把握机会的正确姿势", "<b>落地 AI 的基本认知：</b>知识库、提示词、智能体的关系和区别？", "<b>数据分层技术：</b>如何通过数据分层，让 AI 成为 100% 懂你的 “数字大脑” ？", "<b>提示词逻辑：</b>如何用OKR管理法，引导并调教 AI 出色完成任务 ？", "<b>拒绝“教人做事”：</b>只谈目标、不谈过程的帝王级 AI 管理手段" ] },
+                { title: "第三模块：AI实战场——改变产业结构的应用场景", color: "text-emerald-500", iconBg: "bg-emerald-500/10", items: ["<b>内容流水线：</b>如何通过 AI 实现50倍速、全自动的产出高质量爆款内容？", "<b>资深面试官：</b>如何通过 AI 精准高效的招人、选人、留人、挖人？", "<b>数字分身克隆：</b>如何复刻自己的数字分身，7*24小时服务客户或辅导团队？", "<b>团队销冠助手：</b>如何通过 AI 实现公司全员秒变销冠？", "<b>团队能力对齐：</b>AI如何快速复刻医美、咨询等行业私域员工的销售能力？", "<b>专治团队刺头：</b>如何通过 AI ，加倍提升团队的整体能力和稳定性？", "<b>私人健康指导：</b>如何通过 AI 实现“菲佣”级的贴身健康指导服务？", "<b>面相性格穿透：</b>如何利用 AI 进行步态、面相与语料分析，掌握关系中的主动权？", "<b>伴侣咨询功能：</b>如何通过 AI 疗愈alpha型创业者，内心深处的创伤和盲区？"] },
+                { title: "第四模块：暗黑级应用——AI 辅助领袖掌控力暴增", color: "text-red-500", iconBg: "bg-red-500/10", items: ["<b>全息督察官：</b>如何用 AI 监督分公司、分店的的管理死角与乱象？", "<b>合规性核查：</b>如何用 AI 保障电销、医美或金融等行业的话术合规？", "<b>帝王决策术：</b>如何通过 AI 做出科学、精准的商业/管理等重大决策？", "<b>流程架构师：</b>如何通过AI 辅助团队进入自动运作模式，解放老板时间？", "<b>业务线拆解：</b>如何通过AI 深度研判复杂业务逻辑，找出核心节点？", "<b>跨部门协作：</b>如何通过AI 打通公司各部门之间的协作壁垒？", "<b>稳定性“审计”：</b>如何利用AI 实现垂直管理 3000 人的“领袖透视眼”？", "<b>防政变系统：</b>如何防止核心成员反水，避免老板面临马杜罗式结局？"] },
+                { title: "第五模块：财富终局——AI时代的跨界套利蓝图", color: "text-amber-500", iconBg: "bg-amber-500/10", items: ["<b>AI时代的思维：</b>能用 AI 实现极高变现的人，有哪些思维特征？", "<b>AI 带来的可能性：</b>有哪些领域，会因为AI 爆发巨大的财富机遇？", "<b>想象力是生产力：</b>如何通过“攻击”、“加密”与“禁忌话题”，提升你的 AI 使用力？", "<b>企业无感落地AI ：</b>无需全员费时费力学AI，3分钟即可落地企业的AI应用，长啥样？", "<b>AI 赋能百人企业：</b>年营收2亿的公司老板，为什么果断采用我的 AI 无感落地方案？", "<b>AI 效果的巩固：</b>如何持续让 AI 赋能个体或企业的增长？"] }
             ],
 
             articles: [
@@ -140,60 +111,45 @@
         };
     </script>
 
-    <!-- 1. 导航栏 (含日夜切换) -->
+    <!-- 1. 导航栏 (纯深色) -->
     <nav class="glass-nav fixed top-0 w-full z-50">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between relative z-50">
-            <div class="flex items-center gap-2 font-bold text-xl text-main cursor-pointer" onclick="window.scrollTo(0,0)">
+            <div class="flex items-center gap-2 font-bold text-xl text-white cursor-pointer" onclick="window.scrollTo(0,0)">
                 <i class="fas fa-cube text-blue-500"></i> <span id="nav-logo"></span>
             </div>
-            
-            <div class="hidden md:flex space-x-8 text-sm font-medium text-sub">
+            <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-300">
                 <a href="#course" class="hover:text-blue-500 transition">课程大纲</a>
                 <a href="#articles" class="hover:text-blue-500 transition">深度干货</a>
                 <a href="#instructor" class="hover:text-blue-500 transition">讲师介绍</a>
                 <a href="#about" class="hover:text-blue-500 transition">关于我们</a>
             </div>
-
             <div class="flex items-center gap-4">
-                <!-- 日夜切换 (电脑) -->
-                <button onclick="toggleTheme()" class="text-sub hover:text-blue-500 transition hidden md:block">
-                    <i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:block"></i>
-                </button>
                 <button onclick="toggleContact()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-full text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-blue-500/20">
                     <i class="fab fa-weixin"></i> <span class="hidden md:inline" id="nav-btn-text"></span><span class="md:hidden">咨询</span>
                 </button>
-                <button class="md:hidden text-main text-xl px-2" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
+                <button class="md:hidden text-white text-xl px-2" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
             </div>
         </div>
 
-        <!-- ★★★ 侧边栏 (移植自 2026版 + 收窄宽度) ★★★ -->
+        <!-- 侧边栏 -->
         <div id="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
         <div id="mobile-menu-panel">
             <div class="absolute top-6 right-6">
-                <button onclick="toggleMobileMenu()" class="text-main text-2xl"><i class="fas fa-times"></i></button>
+                <button onclick="toggleMobileMenu()" class="text-white text-2xl"><i class="fas fa-times"></i></button>
             </div>
-            
-            <a href="#course" class="menu-link text-main" onclick="toggleMobileMenu()">课程大纲</a>
-            <a href="#articles" class="menu-link text-main" onclick="toggleMobileMenu()">深度干货</a>
-            <a href="#instructor" class="menu-link text-main" onclick="toggleMobileMenu()">讲师介绍</a>
-            <a href="#about" class="menu-link text-main" onclick="toggleMobileMenu()">关于我们</a>
-            
-            <!-- 日夜切换 (手机) -->
-            <div class="mt-8 flex justify-center">
-                <button onclick="toggleTheme()" class="flex items-center gap-2 border border-gray-500/30 px-4 py-2 rounded-full text-sub text-sm">
-                    <span class="dark:hidden">切换深色</span><span class="hidden dark:block">切换浅色</span>
-                    <i class="fas fa-moon dark:hidden"></i><i class="fas fa-sun hidden dark:block"></i>
-                </button>
-            </div>
+            <a href="#course" class="menu-link" onclick="toggleMobileMenu()">课程大纲</a>
+            <a href="#articles" class="menu-link" onclick="toggleMobileMenu()">深度干货</a>
+            <a href="#instructor" class="menu-link" onclick="toggleMobileMenu()">讲师介绍</a>
+            <a href="#about" class="menu-link" onclick="toggleMobileMenu()">关于我们</a>
         </div>
     </nav>
 
-    <!-- 2. Hero 区域 (含背景图) -->
-    <header id="hero-bg" class="hero-section text-center px-6">
-        <div class="max-w-4xl mx-auto backdrop-blur-sm p-8 rounded-3xl border border-white/10 bg-black/40 dark:bg-slate-900/50">
+    <!-- 2. Hero 区域 -->
+    <header class="hero-section flex flex-col justify-center items-center text-center px-6">
+        <div class="max-w-4xl mx-auto backdrop-blur-sm p-8 rounded-3xl border border-white/10 bg-black/40">
             <div class="inline-block px-4 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-6 border border-blue-500/30 animate-pulse">2025 线下实战营</div>
             <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight" id="course-title"></h1>
-            <p class="text-slate-300 text-lg mb-10 max-w-2xl mx-auto">从“思维认知”到“暗黑落地”，全网硬核实战交付。</p>
+            <p class="text-slate-300 text-lg mb-8 max-w-2xl mx-auto">从“思维认知”到“暗黑落地”，全网硬核实战交付。</p>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
                 <a href="#course" class="px-8 py-3 bg-blue-600 text-white rounded-full font-bold shadow-lg shadow-blue-600/30 hover:bg-blue-500 transition transform hover:-translate-y-1">查看课程大纲</a>
                 <a href="#instructor" class="px-8 py-3 bg-white/10 backdrop-blur text-white border border-white/20 rounded-full font-bold hover:bg-white/20 transition transform hover:-translate-y-1">了解讲师</a>
@@ -201,30 +157,31 @@
         </div>
     </header>
 
-    <!-- 3. 课程大纲 -->
+    <!-- 3. 课程大纲 (优化版：分块展示) -->
     <section id="course" class="py-20">
         <div class="max-w-4xl mx-auto px-4">
             <div class="text-center"><h2 class="section-title">五大核心模块深度赋能</h2></div>
-            <div class="dark-card p-8 md:p-12">
-                <div id="course-content-list"></div>
-                <div class="mt-8 pt-8 border-t border-gray-700/20 text-center text-sub text-sm">更多 AI 强大功能和实战应用场景，课程现场碰撞和分享......</div>
-            </div>
+            
+            <!-- 这里由 JS 生成分块的模块 -->
+            <div id="course-content-list"></div>
+            
+            <div class="mt-8 text-center text-slate-500 text-sm">更多 AI 强大功能和实战应用场景，课程现场碰撞和分享......</div>
         </div>
     </section>
 
     <!-- 4. 权益与承诺 -->
-    <section class="py-20 bg-opacity-50 dark:bg-slate-900/50 bg-slate-100/50 border-y dark:border-white/5 border-black/5">
+    <section class="py-20 bg-slate-900/50 border-y border-white/5">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid md:grid-cols-2 gap-12 items-start">
                 <div>
-                    <h3 class="text-2xl font-bold mb-8 text-main flex items-center gap-3"><i class="fas fa-gift text-yellow-500"></i> 课程额外权益</h3>
-                    <ul id="benefits-list" class="space-y-5 text-sub text-sm"></ul>
+                    <h3 class="text-2xl font-bold mb-8 text-white flex items-center gap-3"><i class="fas fa-gift text-yellow-500"></i> 课程额外权益</h3>
+                    <ul id="benefits-list" class="space-y-5 text-slate-300 text-sm"></ul>
                 </div>
                 <div class="dark-card p-8 bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-[60px]"></div>
                     <h3 class="text-2xl font-bold mb-6 text-white flex items-center gap-3"><i class="fas fa-shield-alt text-green-400"></i> 全网硬核承诺</h3>
                     <ul id="promise-list" class="space-y-4 text-slate-300 text-sm relative z-10 leading-relaxed"></ul>
-                    <button onclick="toggleContact()" class="w-full mt-8 bg-blue-600 font-bold py-4 rounded-xl hover:bg-blue-500 transition shadow-lg text-white">立即锁定席位</button>
+                    <button onclick="toggleContact()" class="w-full mt-8 bg-blue-600 text-white font-bold py-4 rounded-xl hover:bg-blue-500 transition shadow-lg">立即锁定席位</button>
                 </div>
             </div>
         </div>
@@ -239,16 +196,16 @@
     </section>
 
     <!-- 6. 导师介绍 -->
-    <section id="instructor" class="py-20 bg-opacity-30 dark:bg-slate-800/30 bg-slate-100/30">
+    <section id="instructor" class="py-20 bg-slate-800/30">
         <div class="max-w-4xl mx-auto px-4">
             <div class="dark-card p-8 md:p-12 flex flex-col md:flex-row items-center gap-10">
-                <img id="inst-img" class="w-40 h-40 rounded-full object-cover shadow-2xl border-4 border-gray-700/20" alt="Mentor">
+                <img id="inst-img" class="w-40 h-40 rounded-full object-cover shadow-2xl border-4 border-slate-700" alt="Mentor">
                 <div class="flex-1 text-center md:text-left">
-                    <h2 class="text-3xl font-bold text-main mb-2" id="inst-name"></h2>
-                    <p class="text-blue-500 font-bold mb-6" id="inst-title"></p>
-                    <div id="inst-desc" class="space-y-4 text-sub leading-relaxed text-sm"></div>
+                    <h2 class="text-3xl font-bold text-white mb-2" id="inst-name"></h2>
+                    <p class="text-blue-400 font-bold mb-6" id="inst-title"></p>
+                    <div id="inst-desc" class="space-y-4 text-slate-400 leading-relaxed text-sm"></div>
                     <div class="mt-8 flex gap-4 justify-center md:justify-start">
-                         <button onclick="openInstructorModal()" class="px-6 py-2 border border-gray-500/30 text-sub rounded-full hover:bg-gray-500/10 transition text-sm">查看详细履历</button>
+                         <button onclick="openInstructorModal()" class="px-6 py-2 border border-slate-600 text-slate-300 rounded-full hover:bg-slate-700 transition text-sm">查看详细履历</button>
                          <button onclick="toggleContact()" class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-500 transition text-sm font-bold">添加微信</button>
                     </div>
                 </div>
@@ -260,78 +217,71 @@
     <section id="about" class="py-20">
         <div class="max-w-2xl mx-auto px-4 text-center">
             <h2 class="section-title">关于我们</h2>
-            <p id="about-desc" class="text-lg text-sub leading-relaxed mb-12"></p>
+            <p id="about-desc" class="text-lg text-slate-400 leading-relaxed mb-12"></p>
             <div class="grid grid-cols-3 gap-4">
-                <div class="p-6 dark-card"><div class="text-3xl mb-3">🎯</div><div class="font-bold text-main">实战</div></div>
-                <div class="p-6 dark-card"><div class="text-3xl mb-3">💡</div><div class="font-bold text-main">落地</div></div>
-                <div class="p-6 dark-card"><div class="text-3xl mb-3">🚀</div><div class="font-bold text-main">增效</div></div>
+                <div class="p-6 dark-card"><div class="text-3xl mb-3">🎯</div><div class="font-bold text-white">实战</div></div>
+                <div class="p-6 dark-card"><div class="text-3xl mb-3">💡</div><div class="font-bold text-white">落地</div></div>
+                <div class="p-6 dark-card"><div class="text-3xl mb-3">🚀</div><div class="font-bold text-white">增效</div></div>
             </div>
         </div>
     </section>
 
-    <footer class="py-10 text-center text-xs text-sub border-t dark:border-slate-800 border-slate-200">
+    <footer class="bg-slate-950 text-slate-600 py-10 text-center text-xs border-t border-slate-900">
         <p>© 2026 华哥架构工作室 | All Rights Reserved</p>
     </footer>
 
-    <!-- ==================== 弹窗系统 (保持苹果风头部) ==================== -->
+    <!-- ==================== 弹窗系统 (防滚动+固定头部) ==================== -->
 
+    <!-- 二维码弹窗 -->
     <div id="contact-modal" class="modal-overlay" onclick="closeModal(event, 'contact-modal')">
-        <div class="modal-bg w-[90%] max-w-sm relative">
-            <button onclick="toggleContact()" class="absolute top-3 right-3 text-sub hover:text-main"><i class="fas fa-times text-xl"></i></button>
-            <div class="p-8 text-center">
-                <h3 class="text-xl font-bold text-main mb-2">扫码咨询 / 报名</h3>
-                <p class="text-xs text-sub mb-6">名额有限，请直接添加华哥微信</p>
-                <img id="modal-qr" class="w-48 h-48 rounded-lg mx-auto mb-4 border p-1" alt="QR">
-                <div class="py-3 px-4 rounded-xl flex justify-between items-center bg-gray-100 dark:bg-slate-800 cursor-pointer" onclick="copyWechat()">
-                    <span class="text-xs text-sub">微信号：</span><span class="font-mono font-bold text-main" id="modal-wechat"></span><i class="fas fa-copy text-blue-500"></i>
-                </div>
-                <p id="copy-tip" class="text-[10px] text-green-500 mt-2 h-4 opacity-0 transition">已复制</p>
+        <div class="bg-white p-8 rounded-2xl max-w-sm w-[90%] text-center shadow-2xl relative animate-up">
+            <button onclick="toggleContact()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-900"><i class="fas fa-times text-xl"></i></button>
+            <h3 class="text-xl font-bold text-slate-900 mb-2">扫码咨询 / 报名</h3>
+            <p class="text-xs text-slate-500 mb-6">名额有限，请直接添加华哥微信</p>
+            <img id="modal-qr" class="w-48 h-48 rounded-lg mx-auto mb-4 border p-1" alt="QR">
+            <div class="py-3 px-4 rounded-xl flex justify-between items-center bg-slate-50 cursor-pointer" onclick="copyWechat()">
+                <span class="text-xs text-slate-500">微信号：</span><span class="font-mono font-bold text-slate-800" id="modal-wechat"></span><i class="fas fa-copy text-blue-500"></i>
             </div>
+            <p id="copy-tip" class="text-[10px] text-green-500 mt-2 h-4 opacity-0 transition">已复制</p>
         </div>
     </div>
 
-    <!-- 文章/导师详情弹窗 -->
+    <!-- 文章详情 -->
     <div id="article-modal" class="modal-overlay" onclick="closeModal(event, 'article-modal')">
-        <div class="modal-bg w-full max-w-2xl h-[85vh] md:rounded-2xl shadow-2xl relative flex flex-col">
+        <div class="bg-slate-900 w-full max-w-2xl h-[85vh] md:rounded-2xl shadow-2xl relative flex flex-col border border-slate-700 overflow-hidden">
             <div class="modal-header">
-                <h2 class="text-base font-bold text-main truncate pr-4" id="art-title"></h2>
-                <button onclick="document.getElementById('article-modal').classList.remove('show')" class="text-sub hover:text-main"><i class="fas fa-times"></i></button>
+                <h2 class="text-base font-bold text-white truncate pr-4" id="art-title"></h2>
+                <button onclick="document.getElementById('article-modal').classList.remove('show'); document.body.classList.remove('modal-open');" class="text-slate-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
-            <div id="art-content" class="p-8 overflow-y-auto article-body flex-1 text-sm"></div>
-            <div class="p-4 border-t border-gray-700/20 text-center flex-shrink-0">
+            <div id="art-content" class="p-8 overflow-y-auto article-body bg-slate-800 flex-1 text-sm"></div>
+            <div class="p-4 border-t border-slate-700 bg-slate-900 text-center flex-shrink-0">
                 <button onclick="toggleContact()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-500 transition">觉得有价值？加华哥交流</button>
             </div>
         </div>
     </div>
     
+    <!-- 导师详情 -->
     <div id="instructor-modal" class="modal-overlay" onclick="closeModal(event, 'instructor-modal')">
-        <div class="modal-bg w-full max-w-xl h-[80vh] md:rounded-2xl relative flex flex-col">
+        <div class="bg-slate-900 w-full max-w-xl h-[80vh] md:rounded-2xl relative border border-slate-700 flex flex-col overflow-hidden">
              <div class="modal-header justify-end">
-                <button onclick="document.getElementById('instructor-modal').classList.remove('show')" class="text-sub hover:text-main"><i class="fas fa-times"></i></button>
+                <button onclick="document.getElementById('instructor-modal').classList.remove('show'); document.body.classList.remove('modal-open');" class="text-slate-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
             </div>
-            <div class="p-8 overflow-y-auto flex-1">
+            <div class="p-8 overflow-y-auto flex-1 bg-slate-800">
                 <div class="text-center mb-6">
                     <img id="modal-inst-img" class="w-24 h-24 rounded-full mx-auto mb-3 border-2 border-blue-500">
-                    <h3 class="text-2xl font-bold text-main">华哥</h3>
-                    <p class="text-blue-500 text-sm">AI 商业架构师</p>
+                    <h3 class="text-2xl font-bold text-white">华哥</h3>
+                    <p class="text-blue-400 text-sm">AI 商业架构师</p>
                 </div>
                 <div id="inst-detail-content" class="article-body text-sm"></div>
             </div>
-            <div class="p-4 border-t border-gray-700/20 text-center flex-shrink-0">
+            <div class="p-4 border-t border-slate-700 bg-slate-900 text-center flex-shrink-0">
                 <button onclick="toggleContact()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-500 transition">预约咨询</button>
             </div>
         </div>
     </div>
 
     <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            if (html.classList.contains('dark')) { html.classList.remove('dark'); html.classList.add('light'); localStorage.setItem('theme', 'light'); } 
-            else { html.classList.remove('light'); html.classList.add('dark'); localStorage.setItem('theme', 'dark'); }
-        }
-        
         document.addEventListener('DOMContentLoaded', () => {
-            if (localStorage.getItem('theme') === 'light') { document.documentElement.classList.remove('dark'); document.documentElement.classList.add('light'); }
             const d = CONFIG;
             document.getElementById('nav-logo').innerText = d.siteInfo.logoText;
             document.getElementById('nav-btn-text').innerText = d.siteInfo.contactBtnText;
@@ -339,16 +289,16 @@
             document.getElementById('modal-qr').src = d.siteInfo.qrCode;
             document.getElementById('modal-wechat').innerText = d.siteInfo.wechatId;
             
-            // 设置背景图 (支持日夜模式)
-            const heroBg = document.querySelector('.hero-section');
-            // 注意：这里需要动态设置 style 里的 backgroundImage，因为 class 里不好动态插变量
-            // 为了简单，我们用 CSS 变量或者直接 JS 设置
-            // 建议：直接在 CSS 里写死 linear-gradient，然后这里只改 url
-            
+            // 课程模块渲染 (优化：独立卡片式)
             const courseDiv = document.getElementById('course-content-list');
             d.courseModules.forEach(mod => {
-                const itemsHtml = mod.items.map(t => `<li class="flex items-start gap-3 mb-2 text-sub text-sm leading-relaxed"><i class="fas fa-check-circle ${mod.color.replace('bg-','text-')} mt-1 flex-shrink-0"></i> <span>${t}</span></li>`).join('');
-                courseDiv.innerHTML += `<div class="module-item"><div class="module-title"><span class="w-2 h-6 ${mod.color} rounded-full"></span>${mod.title}</div><ul class="module-list pl-4">${itemsHtml}</ul></div>`;
+                const itemsHtml = mod.items.map(t => `<li class="flex items-start gap-3 mb-2 text-slate-300 text-sm leading-relaxed"><i class="fas fa-check-circle ${mod.color.replace('bg-','text-')} mt-1 flex-shrink-0"></i> <span>${t}</span></li>`).join('');
+                courseDiv.innerHTML += `
+                    <div class="module-card">
+                        <div class="module-title"><span class="w-1.5 h-6 ${mod.color} rounded-full"></span>${mod.title}</div>
+                        <ul class="module-list pl-4">${itemsHtml}</ul>
+                    </div>
+                `;
             });
 
             document.getElementById('benefits-list').innerHTML = d.benefits.map(t => `<li class="flex gap-3"><i class="fas fa-star text-yellow-500 mt-1"></i> <span>${t}</span></li>`).join('');
@@ -356,7 +306,7 @@
 
             const artList = document.getElementById('articles-list');
             d.articles.forEach((a, index) => {
-                artList.innerHTML += `<div onclick="openArticle(${index})" class="dark-card p-6 cursor-pointer group h-full flex flex-col"><div class="mb-4"><span class="text-xs text-blue-400 font-mono bg-blue-500/10 px-2 py-1 rounded">${a.date}</span></div><h3 class="text-lg font-bold text-main group-hover:text-blue-500 transition mb-3">${a.title}</h3><p class="text-sm text-sub line-clamp-3 flex-1 mb-4">${a.summary}</p><div class="pt-4 border-t border-gray-700/20 text-xs font-bold text-sub flex justify-between items-center"><span>阅读全文</span> <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i></div></div>`;
+                artList.innerHTML += `<div onclick="openArticle(${index})" class="dark-card p-6 cursor-pointer group h-full flex flex-col"><div class="mb-4"><span class="text-xs text-blue-400 font-mono bg-blue-900/30 px-2 py-1 rounded">${a.date}</span></div><h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition mb-3">${a.title}</h3><p class="text-sm text-slate-400 line-clamp-3 flex-1 mb-4">${a.summary}</p><div class="pt-4 border-t border-slate-700 text-xs font-bold text-slate-500 flex justify-between items-center"><span>阅读全文</span> <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i></div></div>`;
             });
 
             document.getElementById('inst-name').innerText = d.instructor.name;
@@ -368,41 +318,49 @@
         });
 
         function toggleMobileMenu() { 
-            document.getElementById('mobile-menu-panel').classList.toggle('open');
-            document.getElementById('mobile-menu-overlay').classList.toggle('open');
+            const menu = document.getElementById('mobile-menu-panel');
+            const overlay = document.getElementById('mobile-menu-overlay');
+            menu.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        // 核心：弹窗防滚动控制
+        function toggleModal(modalId, show) {
+            const m = document.getElementById(modalId);
+            if (show) {
+                m.classList.add('show');
+                document.body.classList.add('modal-open'); // 锁死背景
+            } else {
+                m.classList.remove('show');
+                document.body.classList.remove('modal-open');
+            }
         }
 
         function toggleContact() {
             const m = document.getElementById('contact-modal');
-            const o = document.getElementById('modal-overlay');
-            if (m.classList.contains('hidden')) {
-                m.classList.remove('hidden'); o.style.display = 'flex';
+            if (m.style.display === 'flex') {
+                 m.style.display = 'none';
+                 document.body.classList.remove('modal-open');
             } else {
-                // 这里要适配新的弹窗显示逻辑
-                const overlay = document.getElementById('contact-modal');
-                if (overlay.style.display === 'flex') {
-                    overlay.style.display = 'none';
-                } else {
-                    overlay.style.display = 'flex';
-                }
+                 m.style.display = 'flex';
+                 document.body.classList.add('modal-open');
             }
         }
         
         function openArticle(index) {
             document.getElementById('art-title').innerText = CONFIG.articles[index].title;
             document.getElementById('art-content').innerHTML = CONFIG.articles[index].content;
-            document.getElementById('article-modal').classList.add('show');
+            toggleModal('article-modal', true);
         }
         function openInstructorModal() {
             document.getElementById('inst-detail-content').innerHTML = CONFIG.instructor.detail;
-            document.getElementById('instructor-modal').classList.add('show');
+            toggleModal('instructor-modal', true);
         }
         
         function closeModal(e, id) { 
-            if (e.target.id === id) document.getElementById(id).classList.remove('show'); 
-            // 针对二维码弹窗的特殊处理
-            if (id === 'contact-modal' && e.target.id === 'contact-modal') {
-                 document.getElementById('contact-modal').style.display = 'none';
+            if (e.target.id === id) {
+                toggleModal(id, false);
+                if(id==='contact-modal') document.getElementById(id).style.display='none';
             }
         }
         
