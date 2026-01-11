@@ -4,15 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>华哥 - AI商业架构师</title>
-    <!-- 引入 Tailwind CSS (为了好看的样式，自动加载，不用管) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入图标库 -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         body { font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif; background-color: #0f172a; color: #e2e8f0; }
         .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .gradient-text { background: linear-gradient(to right, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        /* 弹窗动画 */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 100; justify-content: center; align-items: center; padding: 20px; }
         .modal.active { display: flex; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -21,7 +18,7 @@
 <body class="pb-20">
 
     <!-- ============================================================ -->
-    <!-- 🟢 华哥配置区 (在这里修改网站内容，不需要懂代码！) -->
+    <!-- 🟢 华哥配置区 (改这里的内容就行) -->
     <!-- ============================================================ -->
     <script>
         const WEBSITE_DATA = {
@@ -32,9 +29,9 @@
                 slogan: "让 AI 成为老板的思维延伸，构建永不离职的数字员工团队。",
                 // 头像图片链接
                 avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=200&h=200&fit=crop", 
-                // 详细介绍 (支持换行)
+                // 详细介绍
                 bio: "深耕销售心理学与自动化技术多年，擅长将复杂的企业业务流程转化为 AI 逻辑流。\n\n通过 Dify + 自动化架构，已助力超过 100 家企业实现数字化转型。我不仅教技术，更教如何用 AI 降维打击竞争对手。",
-                wechat: "Huage_AI_2026", // 微信号
+                wechat: "Huage_AI_2026", 
                 // 微信二维码图片链接
                 qrCode: "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=Huage_AI_2026" 
             },
@@ -85,7 +82,7 @@
     <nav class="fixed top-0 w-full z-50 bg-slate-950/90 backdrop-blur border-b border-white/10">
         <div class="max-w-4xl mx-auto px-6 h-16 flex justify-between items-center">
             <div class="text-lg font-bold text-white tracking-wider">HUAGED<span class="text-blue-500">.AI</span></div>
-            <button onclick="openModal('资料领取', '请填写下方表单，系统将自动发送资料到您的手机。', 'form')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-sm font-bold transition">领取资料</button>
+            <button onclick="scrollToContact()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded-full text-sm font-bold transition">加我微信</button>
         </div>
     </nav>
 
@@ -99,21 +96,14 @@
         </h1>
         <p id="display-slogan" class="text-slate-400 text-lg mb-10"></p>
 
-        <!-- 留资表单 -->
-        <div class="glass-card p-6 rounded-3xl shadow-2xl max-w-md mx-auto text-left">
-            <form onsubmit="submitForm(event)" class="space-y-4">
-                <div class="flex flex-col gap-3">
-                    <input type="text" id="lead-name" placeholder="您的姓名" required class="w-full bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-white">
-                    <input type="tel" id="lead-phone" placeholder="手机号" required class="w-full bg-slate-800/50 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 text-white">
-                </div>
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
-                    立即领取《AI 落地红利指南》 <i class="fas fa-paper-plane"></i>
-                </button>
-                <div class="flex items-start gap-2">
-                     <input type="checkbox" id="agree" required class="mt-1">
-                     <label for="agree" class="text-[10px] text-slate-500 cursor-pointer">我已阅读并同意《隐私政策》，授权联系我以提供资料。</label>
-                </div>
-            </form>
+        <!-- 只有二维码的卡片 -->
+        <div class="glass-card p-8 rounded-3xl shadow-2xl max-w-sm mx-auto text-center border-t-4 border-blue-500">
+            <h3 class="text-xl font-bold text-white mb-4">扫码领取《AI 落地红利指南》</h3>
+            <div class="bg-white p-2 rounded-xl inline-block mb-4">
+                <img id="hero-qr" class="w-40 h-40" alt="扫码加微信">
+            </div>
+            <p class="text-slate-400 text-sm font-mono mb-2" id="hero-wechat"></p>
+            <p class="text-xs text-slate-500">添加请备注：<b>官网资料</b></p>
         </div>
     </section>
 
@@ -150,8 +140,8 @@
         <div id="articles-container" class="grid gap-3"></div>
     </section>
 
-    <!-- 联系我们 -->
-    <section class="px-6 py-12 max-w-3xl mx-auto text-center border-t border-white/5 mt-8">
+    <!-- 联系我们 (底部) -->
+    <section id="contact-section" class="px-6 py-12 max-w-3xl mx-auto text-center border-t border-white/5 mt-8">
         <h2 class="text-xl font-bold text-white mb-6">联系华哥</h2>
         <div class="bg-white p-2 inline-block rounded-xl mb-4">
             <img id="display-qr" class="w-32 h-32" alt="QR">
@@ -171,8 +161,10 @@
             <div id="modal-content" class="text-slate-400 leading-relaxed text-sm whitespace-pre-wrap max-h-[60vh] overflow-y-auto">
                 内容...
             </div>
-            <!-- 弹窗内的表单插槽 -->
-            <div id="modal-form-slot" class="hidden mt-4"></div>
+            <!-- 弹窗底部按钮 -->
+            <button onclick="scrollToContact(); document.getElementById('modal').classList.remove('active')" class="w-full mt-6 bg-blue-600/20 text-blue-400 py-2 rounded-xl text-sm font-bold border border-blue-500/30 hover:bg-blue-600 hover:text-white transition">
+                感兴趣？点击加微信咨询
+            </button>
         </div>
     </div>
 
@@ -183,13 +175,17 @@
 
             // 1. 个人信息
             document.getElementById('display-name').innerText = d.info.name;
-            document.getElementById('display-slogan').innerText = d.info.motto; // 注意: 代码里用的motto, 配置里用的slogan, 修正一下
             document.getElementById('display-slogan').innerText = d.info.slogan;
             document.getElementById('display-avatar').src = d.info.avatar;
             document.getElementById('display-title').innerText = `${d.info.name} · ${d.info.title}`;
             document.getElementById('display-bio-short').innerText = d.info.bio;
+            
+            // 多个二维码位置
             document.getElementById('display-qr').src = d.info.qrCode;
+            document.getElementById('hero-qr').src = d.info.qrCode;
+            
             document.getElementById('display-wechat').innerText = `微信号：${d.info.wechat}`;
+            document.getElementById('hero-wechat').innerText = `微信号：${d.info.wechat}`;
 
             // 2. 产品
             const prodContainer = document.getElementById('products-container');
@@ -258,16 +254,8 @@
             }
         }
 
-        function submitForm(e) {
-            e.preventDefault();
-            const name = document.getElementById('lead-name').value;
-            const phone = document.getElementById('lead-phone').value;
-            
-            // 这里仅仅是前端模拟成功，实际上没有存数据库
-            // 如果要存，需要结合之前的 Google Script 逻辑 fetch 发送
-            
-            alert(`提交成功！\n\n感谢 ${name}，系统已记录您的手机 ${phone}。\n稍后助手会将资料发送给您。`);
-            e.target.reset();
+        function scrollToContact() {
+            document.getElementById('contact-section').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
 </body>
