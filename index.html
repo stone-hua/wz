@@ -10,14 +10,10 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* 视觉轻量化调整 */
-        body { font-family: -apple-system, 'PingFang SC', sans-serif; background-color: #0f172a; color: #e2e8f0; }
-        
-        /* 玻璃质感导航 */
-        .glass-nav { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,0.08); }
+        body { font-family: -apple-system, 'PingFang SC', sans-serif; background-color: #0f172a; color: #cbd5e1; }
+        .glass-nav { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        /* 侧边栏 */
-        #mobile-menu-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        #mobile-menu-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         #mobile-menu-overlay.open { opacity: 1; pointer-events: auto; }
         #mobile-menu-panel {
             position: fixed; top: 0; right: 0; bottom: 0; width: 260px; z-index: 91; padding: 2rem;
@@ -28,33 +24,22 @@
         #mobile-menu-panel.open { transform: translateX(0); }
         .menu-link { font-size: 1.1rem; font-weight: 600; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f8fafc; }
 
-        /* Hero 背景图 (更通透的渐变) */
         .hero-section { 
-            background-image: linear-gradient(to bottom, rgba(15,23,42,0.2), #0f172a), url('./images/banner.jpg'); 
+            background-image: linear-gradient(to bottom, rgba(15,23,42,0.3), #0f172a), url('./images/banner.jpg'); 
             background-size: cover; background-position: center; min-height: 600px;
             display: flex; align-items: center; justify-content: center; position: relative;
         }
 
-        /* 弹窗 */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
         .modal-overlay.show { display: flex; animation: zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes zoomIn { from { transform: scale(0.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         body.modal-open { overflow: hidden; }
 
-        /* 标题装饰 */
-        .section-title { position: relative; display: inline-block; margin-bottom: 2.5rem; font-size: 2rem; font-weight: 800; color: #f8fafc; letter-spacing: 1px; }
-        .section-title::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 2px; }
+        .section-title { position: relative; display: inline-block; margin-bottom: 3rem; font-size: 2rem; font-weight: 800; color: #f8fafc; letter-spacing: 1px; }
+        .section-title::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 2px; }
 
-        /* 优化后的卡片 (背景更浅，更透气) */
-        .dark-card { background: rgba(30, 41, 59, 0.6); border-radius: 1.25rem; border: 1px solid rgba(255,255,255,0.08); transition: all 0.3s ease; backdrop-filter: blur(10px); }
-        .dark-card:hover { transform: translateY(-4px); background: rgba(30, 41, 59, 0.8); border-color: rgba(255,255,255,0.15); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4); }
-
-        /* 课程模块内部优化 */
-        .module-card { margin-bottom: 2rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); border-radius: 1rem; }
-        .module-card:last-child { margin-bottom: 0; }
-        .module-list { display: grid; grid-template-columns: 1fr; gap: 0.5rem; }
-        /* 电脑端双列布局，省空间 */
-        @media (min-width: 768px) { .module-list { grid-template-columns: 1fr 1fr; gap: 0.8rem 2rem; } }
+        .dark-card { background: #1e293b; border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; }
+        .dark-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); background: #263346; border-color: rgba(255,255,255,0.1); }
 
         .article-body h3 { font-size: 1.2em; font-weight: bold; margin-top: 1.5em; margin-bottom: 0.8em; color: #e2e8f0; border-left: 4px solid #3b82f6; padding-left: 12px; }
         .article-body p { margin-bottom: 1.2em; line-height: 1.8; color: #94a3b8; text-align: justify; }
@@ -82,7 +67,6 @@
                 detail: `<h3>实战经验</h3><p>拥有 10 年以上互联网商业架构经验，曾主导多个亿级项目的技术落地。</p><h3>核心理念</h3><p>我不教你写代码，也不教你画图。我教的是<b>“AI 时代的商业底层逻辑”</b>。</p>`
             },
 
-            // 🟢 新增：实战案例配置
             cases: [
                 { 
                     title: "房产销冠分身系统", 
@@ -100,13 +84,12 @@
                 }
             ],
 
-            // 🟢 课程大纲 (全量更新)
             courseModules: [
-                { title: "第一模块：认知重构——破除思维牢笼", color: "text-blue-400", iconBg: "bg-blue-500/10", items: ["<b>财富的分水岭：</b>为什么别人把 AI 当玩具，而我用它当“数字印钞机”？", "<b>社会草台班子：</b>AI对个人、企业和社会，会有什么巨大影响和价值？", "<b>如何让 AI 理解你的需求：</b>大多数人感觉AI不好用，真实原因是什么？", "<b>如何让 AI 帮你做决策：</b>重大决策和战略选择，为什么一定要 AI 参与进来？", "<b>财富增量的必然：</b>AI 如何给个体和管理者，创造新的财富增量？", "<b>偏见与傲慢：</b>阻碍多数人用 AI变现 的三大错误观点是什么？", "<b>AI 的高手视角：</b>使用 AI 巨额变现 或 降本增效，需要哪些前置条件？"] },
-                { title: "第二模块：炼金秘诀——调教出好用智能体的硬核逻辑", color: "text-purple-400", iconBg: "bg-purple-500/10", items: ["<b>信任与许愿：</b>阻碍你变现的不是 AI 技术，而是“不敢要求”与“不信任”", "<b>避开认知巨坑：</b>深挖大部分人错过 AI 红利的原因，以及把握机会的正确姿势", "<b>落地 AI 的基本认知：</b>知识库、提示词、智能体的关系和区别？", "<b>数据分层技术：</b>如何通过数据分层，让 AI 成为 100% 懂你的 “数字大脑” ？", "<b>提示词逻辑：</b>如何用OKR管理法，引导并调教 AI 出色完成任务 ？", "<b>拒绝“教人做事”：</b>只谈目标、不谈过程的帝王级 AI 管理手段" ] },
-                { title: "第三模块：AI实战场——改变产业结构的应用场景", color: "text-emerald-400", iconBg: "bg-emerald-500/10", items: ["<b>内容流水线：</b>如何通过 AI 实现50倍效率、全自动的产出高质量爆款内容？", "<b>资深面试官：</b>如何通过 AI 精准高效的招人、选人、留人、挖人？", "<b>数字分身克隆：</b>如何复刻自己的数字分身，7*24小时服务客户或辅导团队？", "<b>团队销冠助手：</b>如何通过 AI 实现公司全员秒变销冠？", "<b>团队能力对齐：</b>AI如何快速复刻医美、咨询等行业私域员工的销售能力？", "<b>专治团队刺头：</b>如何通过 AI ，加倍提升团队的整体能力和稳定性？", "<b>私人健康指导：</b>如何通过 AI 实现“菲佣”级的贴身健康指导服务？", "<b>面相性格穿透：</b>如何利用 AI 进行步态、面相与语料分析，掌握关系中的主动权？", "<b>伴侣咨询功能：</b>如何通过 AI 疗愈alpha型创业者，内心深处的创伤和盲区？"] },
-                { title: "第四模块：暗黑级应用——AI 辅助领袖掌控力暴增", color: "text-red-400", iconBg: "bg-red-500/10", items: ["<b>全息督察官：</b>如何用 AI 监督分公司、分店的的管理死角与乱象？", "<b>合规性核查：</b>如何用 AI 保障电销、医美或金融等行业的话术合规？", "<b>帝王决策术：</b>如何通过 AI 做出科学、精准的商业/管理等重大决策？", "<b>流程架构师：</b>如何通过AI 辅助团队进入自动运作模式，大量解放老板时间？", "<b>业务线拆解：</b>如何通过AI 深度研判复杂业务逻辑，找出核心节点？", "<b>跨部门协作：</b>如何通过AI 打通公司各部门之间的协作壁垒？", "<b>稳定性“审计”：</b>如何利用AI 实现垂直管理 3000 人的“领袖透视眼”？", "<b>防政变系统：</b>如何防止核心成员反水，避免老板面临委内瑞拉“马杜罗”式的结局？"] },
-                { title: "第五模块：财富终局——AI时代的跨界套利蓝图", color: "text-amber-400", iconBg: "bg-amber-500/10", items: ["<b>AI时代的思维：</b>能用 AI 实现极高变现的人，有哪些思维特征？", "<b>AI 带来的可能性：</b>有哪些领域，会因为AI 爆发巨大的财富机遇？", "<b>想象力是生产力：</b>如何通过“攻击”、“加密”与“禁忌话题”，提升你的 AI 使用力？", "<b>企业无感落地AI ：</b>无需全员费时费力学AI，3分钟即可落地企业的AI应用，长啥样？", "<b>AI 赋能百人企业：</b>年营收2亿的公司老板，愿意采用什么样的 AI 落地方案？", "<b>AI 效果的巩固：</b>如何持续让 AI 赋能个体或企业的长期增长？"] }
+                { title: "第一模块：认知重构——破除思维牢笼", color: "text-blue-500", items: ["<b>财富的分水岭：</b>为什么别人把 AI 当玩具，而我用它当“数字印钞机”？", "<b>社会草台班子：</b>AI对个人、企业和社会，会有什么巨大影响和价值？", "<b>如何让 AI 理解你的需求：</b>大多数人感觉AI不好用，真实原因是什么？", "<b>如何让 AI 帮你做决策：</b>重大决策和战略选择，为什么一定要 AI 参与进来？", "<b>财富增量的必然：</b>AI 如何给个体和管理者，创造新的财富增量？", "<b>偏见与傲慢：</b>阻碍多数人用 AI变现 的三大错误观点是什么？", "<b>AI 的高手视角：</b>使用 AI 巨额变现 或 降本增效，需要哪些前置条件？"] },
+                { title: "第二模块：炼金秘诀——调教出好用智能体的硬核逻辑", color: "text-purple-500", items: ["<b>信任与许愿：</b>阻碍你变现的不是 AI 技术，而是“不敢要求”与“不信任”", "<b>避开认知巨坑：</b>深挖大部分人错过 AI 红利的原因，以及把握机会的正确姿势", "<b>落地 AI 的基本认知：</b>知识库、提示词、智能体的关系和区别？", "<b>数据分层技术：</b>如何通过数据分层，让 AI 成为 100% 懂你的 “数字大脑” ？", "<b>提示词逻辑：</b>如何用OKR管理法，引导并调教 AI 出色完成任务 ？", "<b>拒绝“教人做事”：</b>只谈目标、不谈过程的帝王级 AI 管理手段" ] },
+                { title: "第三模块：AI实战场——改变产业结构的应用场景", color: "text-emerald-500", items: ["<b>内容流水线：</b>如何通过 AI 实现50倍效率、全自动的产出高质量爆款内容？", "<b>资深面试官：</b>如何通过 AI 精准高效的招人、选人、留人、挖人？", "<b>数字分身克隆：</b>如何复刻自己的数字分身，7*24小时服务客户或辅导团队？", "<b>团队销冠助手：</b>如何通过 AI 实现公司全员秒变销冠？", "<b>团队能力对齐：</b>AI如何快速复刻医美、咨询等行业私域员工的销售能力？", "<b>专治团队刺头：</b>如何通过 AI ，加倍提升团队的整体能力和稳定性？", "<b>私人健康指导：</b>如何通过 AI 实现“菲佣”级的贴身健康指导服务？", "<b>面相性格穿透：</b>如何利用 AI 进行步态、面相与语料分析，掌握关系中的主动权？", "<b>伴侣咨询功能：</b>如何通过 AI 疗愈alpha型创业者，内心深处的创伤和盲区？"] },
+                { title: "第四模块：暗黑级应用——AI 辅助领袖掌控力暴增", color: "text-red-500", items: ["<b>全息督察官：</b>如何用 AI 监督分公司、分店的的管理死角与乱象？", "<b>合规性核查：</b>如何用 AI 保障电销、医美或金融等行业的话术合规？", "<b>帝王决策术：</b>如何通过 AI 做出科学、精准的商业/管理等重大决策？", "<b>流程架构师：</b>如何通过AI 辅助团队进入自动运作模式，大量解放老板时间？", "<b>业务线拆解：</b>如何通过AI 深度研判复杂业务逻辑，找出核心节点？", "<b>跨部门协作：</b>如何通过AI 打通公司各部门之间的协作壁垒？", "<b>稳定性“审计”：</b>如何利用AI 实现垂直管理 3000 人的“领袖透视眼”？", "<b>防政变系统：</b>如何防止核心成员反水，避免老板面临委内瑞拉“马杜罗”式的结局？"] },
+                { title: "第五模块：财富终局——AI时代的跨界套利蓝图", color: "text-amber-500", items: ["<b>AI时代的思维：</b>能用 AI 实现极高变现的人，有哪些思维特征？", "<b>AI 带来的可能性：</b>有哪些领域，会因为AI 爆发巨大的财富机遇？", "<b>想象力是生产力：</b>如何通过“攻击”、“加密”与“禁忌话题”，提升你的 AI 使用力？", "<b>企业无感落地AI ：</b>无需全员费时费力学AI，3分钟即可落地企业的AI应用，长啥样？", "<b>AI 赋能百人企业：</b>年营收2亿的公司老板，愿意采用什么样的 AI 落地方案？", "<b>AI 效果的巩固：</b>如何持续让 AI 赋能个体或企业的长期增长？"] }
             ],
 
             articles: [
@@ -116,13 +99,11 @@
 
             about: { desc: "我们是一家专注于 <b>AI 商业落地</b> 的实战机构。只关注 AI 如何在<b>销售、管理、决策</b>等核心商业环节产生真金白银的价值。" },
             
-            // 🟢 新增：适合人群
             targets: [
                 "渴望被AI赋能的超级个体", "被团队管理内耗折磨的老板", "寻求新赛道的职场中高层", "想了解 AI 风口的投资者",
                 "陷入流量焦虑的自媒体IP", "被销售和交付累到崩溃的知识工作者", "想把握住 AI 时代巨大红利的野心家"
             ],
 
-            // 🟢 更新：开课信息
             eventInfo: {
                 time: "2026年01月31日-02月01日 (两天一夜)",
                 location: "河南省郑州市",
@@ -131,7 +112,6 @@
             },
 
             benefits: ["<b>技术突破：</b>一站式解决顶尖大模型网络/账号/充值问题", "<b>实操指导：</b>现场修正学员搭建问题", "<b>自由构建：</b>获得高规格提示词/知识库模板", "<b>从零到一：</b>学习搭建符合自己需求的智能体", "<b>认知重塑：</b>掌握AI时代的逻辑规则", "<b>变现达人：</b>优化创业变现路径", "<b>降本增效：</b>提升组织效率"],
-            
             promise: ["1. 课程现场，你可以听到很多全网没人讲过的 AI实战玩法；", "2. 第一天学完，觉得没收获，当天微信说一声，可无理由、全额退款。<br><span class='text-xs opacity-80'>无理由退款政策是我们线下课的一贯标准，这是张兆华工作室对“课程实战价值”的极致自信，也是对消费者权益的负责任保障。</span>"]
         };
     </script>
@@ -180,7 +160,7 @@
         </div>
     </header>
 
-    <!-- 3. 课程大纲 (优化排版) -->
+    <!-- 3. 课程大纲 (优化版：紧凑排版) -->
     <section id="course" class="py-20">
         <div class="max-w-4xl mx-auto px-4">
             <div class="text-center"><h2 class="section-title">五大核心模块深度赋能</h2></div>
@@ -203,12 +183,10 @@
     <section class="py-20 bg-opacity-50 bg-slate-900/50 border-y border-white/5">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid md:grid-cols-2 gap-16 items-start">
-                <!-- 适合人群 -->
                 <div>
                     <h3 class="text-2xl font-bold mb-8 text-white flex items-center gap-3"><i class="fas fa-users text-blue-400"></i> 适合人群</h3>
                     <div id="targets-list" class="grid grid-cols-1 gap-3"></div>
                 </div>
-                <!-- 权益 -->
                 <div>
                     <h3 class="text-2xl font-bold mb-8 text-white flex items-center gap-3"><i class="fas fa-gift text-yellow-500"></i> 课程权益</h3>
                     <ul id="benefits-list" class="space-y-4 text-slate-300 text-sm"></ul>
@@ -217,7 +195,7 @@
         </div>
     </section>
 
-    <!-- 6. 开课信息 & 承诺 (核心转化区) -->
+    <!-- 6. 开课信息 & 承诺 -->
     <section id="info" class="py-20">
         <div class="max-w-4xl mx-auto px-6">
             <div class="dark-card p-8 md:p-12 bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden text-center">
@@ -259,7 +237,7 @@
                     <p class="text-blue-400 font-bold mb-6" id="inst-title"></p>
                     <div id="inst-desc" class="space-y-4 text-slate-400 leading-relaxed text-sm"></div>
                     <div class="mt-8 flex gap-4 justify-center md:justify-start">
-                         <button onclick="openInstructorModal()" class="px-6 py-2 border border-slate-500/30 text-slate-300 rounded-full hover:bg-slate-500/10 transition text-sm">查看详细履历</button>
+                         <button onclick="openInstructorModal()" class="px-6 py-2 border border-slate-500/30 text-slate-300 rounded-full hover:bg-slate-700 transition text-sm">查看详细履历</button>
                          <button onclick="toggleContact()" class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-500 transition text-sm font-bold">添加微信</button>
                     </div>
                 </div>
@@ -284,7 +262,7 @@
         <p>© 2026 华哥架构工作室 | All Rights Reserved</p>
     </footer>
 
-    <!-- 弹窗系统 (保持不变) -->
+    <!-- 弹窗系统 -->
     <div id="contact-modal" class="modal-overlay" onclick="closeModal(event, 'contact-modal')">
         <div class="bg-white p-8 rounded-2xl max-w-sm w-[90%] text-center shadow-2xl relative animate-up">
             <button onclick="toggleContact()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-900"><i class="fas fa-times text-xl"></i></button>
@@ -330,6 +308,9 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // 强制回到顶部
+            window.scrollTo(0, 0);
+
             const d = CONFIG;
             document.getElementById('nav-logo').innerText = d.siteInfo.logoText;
             document.getElementById('nav-btn-text').innerText = d.siteInfo.contactBtnText;
@@ -337,10 +318,19 @@
             document.getElementById('modal-qr').src = d.siteInfo.qrCode;
             document.getElementById('modal-wechat').innerText = d.siteInfo.wechatId;
 
+            // 渲染课程模块 (紧凑型优化)
             const courseDiv = document.getElementById('course-content-list');
             d.courseModules.forEach(mod => {
-                const itemsHtml = mod.items.map(t => `<li class="flex items-start gap-3 mb-2 text-slate-300 text-sm leading-relaxed"><i class="fas fa-check-circle ${mod.color.replace('bg-','text-')} mt-1 flex-shrink-0"></i> <span>${t}</span></li>`).join('');
-                courseDiv.innerHTML += `<div class="module-card"><div class="module-title"><span class="w-1.5 h-6 ${mod.color} rounded-full"></span>${mod.title}</div><ul class="module-list pl-4">${itemsHtml}</ul></div>`;
+                const itemsHtml = mod.items.map(t => `<li class="flex items-start gap-2 mb-2 text-slate-300 text-sm leading-snug"><i class="fas fa-angle-right ${mod.color.replace('bg-','text-')} mt-1 flex-shrink-0 text-xs"></i> <span>${t}</span></li>`).join('');
+                courseDiv.innerHTML += `
+                    <div class="mb-10 last:mb-0">
+                        <div class="flex items-center gap-3 mb-4 border-b border-white/10 pb-2">
+                            <span class="w-1.5 h-6 ${mod.color.replace('text-','bg-')} rounded-full"></span>
+                            <h3 class="text-xl font-bold text-white tracking-wide">${mod.title}</h3>
+                        </div>
+                        <ul class="grid md:grid-cols-2 gap-x-8 gap-y-1">${itemsHtml}</ul>
+                    </div>
+                `;
             });
 
             // 渲染人群
