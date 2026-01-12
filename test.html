@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>张兆华工作室-官方网站</title>
+    <title>AI 智能体实战应用 | 华哥架构</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = { darkMode: 'class', theme: { extend: { colors: { dark: '#0f172a' } } } }
@@ -13,6 +13,7 @@
         body { font-family: -apple-system, 'PingFang SC', sans-serif; background-color: #0f172a; color: #cbd5e1; }
         .glass-nav { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
 
+        /* 侧边栏 */
         #mobile-menu-overlay { position: fixed; inset: 0; z-index: 90; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
         #mobile-menu-overlay.open { opacity: 1; pointer-events: auto; }
         #mobile-menu-panel {
@@ -24,55 +25,74 @@
         #mobile-menu-panel.open { transform: translateX(0); }
         .menu-link { font-size: 1.1rem; font-weight: 600; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f8fafc; }
 
-        /* ★★★ Hero 图片适配 (精准修改点) ★★★ */
-        .hero-section { 
-            position: relative;
-            background-image: url('./images/banner.jpg'); 
-            background-repeat: no-repeat;
-            background-position: center top; /* 关键：顶部对齐 */
-            display: flex; align-items: center; justify-content: center;
-        }
-        /* 电脑端：保持原样 (Cover铺满 + 600px高度) */
+        /* ★★★ Hero 图片适配 (PC不变，手机端优化) ★★★ */
+        .hero-section { position: relative; background-image: url('./images/banner.jpg'); background-repeat: no-repeat; display: flex; align-items: center; justify-content: center; }
+        
         @media (min-width: 768px) {
-            .hero-section { 
-                background-size: cover; 
-                min-height: 600px; 
-            }
-            .hero-section::before { /* 电脑端全屏渐变 */
-                content: ''; position: absolute; inset: 0;
-                background: linear-gradient(to bottom, rgba(15,23,42,0.3), #0f172a);
-            }
+            .hero-section { background-size: cover; background-position: center; min-height: 600px; }
+            .hero-section::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(15,23,42,0.3), #0f172a); }
         }
-        /* 手机端：精准适配 (Contain逻辑 + 底部渐变) */
         @media (max-width: 767px) {
             .hero-section { 
-                background-size: 100% auto; /* 宽度撑满，高度自适应，不裁切 */
-                min-height: 500px; /* 保证有足够空间放文字 */
-                align-items: flex-end; /* 文字靠下 */
-                padding-bottom: 3rem;
-                background-position: center 60px; /* 让出导航栏高度，图片不被遮挡 */
+                background-size: 100% auto; /* 宽度撑满，高度自适应 */
+                background-position: center 60px; /* 让出导航栏 */
+                min-height: 550px; 
+                align-items: flex-end; padding-bottom: 4rem; 
             }
-            .hero-section::before { /* 手机端渐变：只遮挡底部 40% */
-                content: ''; position: absolute; inset: 0;
-                background: linear-gradient(to bottom, transparent 60%, #0f172a 100%);
+            .hero-section::before { 
+                content: ''; position: absolute; inset: 0; 
+                /* 渐变遮罩：只遮挡底部 40% */
+                background: linear-gradient(to bottom, transparent 60%, #0f172a 100%); 
             }
         }
 
+        /* 弹窗/抽屉 */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
         .modal-overlay.show { display: flex; animation: zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
         @keyframes zoomIn { from { transform: scale(0.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         body.modal-open { overflow: hidden; }
 
+        /* ★★★ 关键修复：二维码弹窗层级最高 ★★★ */
+        #contact-modal { z-index: 20000 !important; }
+
+        /* 标题装饰 */
         .section-title { position: relative; display: inline-block; margin-bottom: 3rem; font-size: 2rem; font-weight: 800; color: #f8fafc; letter-spacing: 1px; }
         .section-title::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 2px; }
 
+        /* 卡片样式 */
         .dark-card { background: #1e293b; border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; }
         .dark-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); background: #263346; border-color: rgba(255,255,255,0.1); }
 
-        .article-body h3 { font-size: 1.2em; font-weight: bold; margin-top: 1.5em; margin-bottom: 0.8em; color: #e2e8f0; border-left: 4px solid #3b82f6; padding-left: 12px; }
-        .article-body p { margin-bottom: 1.2em; line-height: 1.8; color: #94a3b8; text-align: justify; }
+        .module-card { margin-bottom: 2rem; padding: 1.5rem; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
+        .module-card:last-child { margin-bottom: 0; }
+        
+        /* ★★★ 文章详情排版 (自动换行+插图) ★★★ */
+        .article-body { font-size: 1rem; color: #cbd5e1; white-space: pre-wrap; padding-bottom: 100px; } /* 底部留白给悬浮按钮 */
+        .article-body h3 { font-size: 1.3em; font-weight: bold; margin-top: 2em; margin-bottom: 1em; color: #fff; border-left: 4px solid #3b82f6; padding-left: 12px; }
+        .article-body p { margin-bottom: 1.5em; line-height: 1.8; text-align: justify; }
+        .article-body img { width: 100%; border-radius: 0.75rem; margin: 1.5rem 0; border: 1px solid rgba(255,255,255,0.1); }
+        .article-body b { color: #fff; font-weight: 700; }
 
+        /* 弹窗头部 */
         .modal-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(30,41,59,0.95); position: sticky; top: 0; z-index: 20; }
+        
+        /* ★★★ 悬浮胶囊按钮 (解决遮挡问题) ★★★ */
+        .float-btn-container {
+            position: absolute; bottom: 2rem; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none; z-index: 50;
+        }
+        .float-btn {
+            pointer-events: auto;
+            background: rgba(37, 99, 235, 0.9); backdrop-filter: blur(8px);
+            color: white; padding: 0.8rem 2.5rem; border-radius: 9999px;
+            font-weight: bold; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.5);
+            transition: all 0.2s; border: 1px solid rgba(255,255,255,0.2);
+            font-size: 0.95rem; display: flex; items-center; gap: 0.5rem;
+        }
+        .float-btn:hover { background: #3b82f6; transform: translateY(-2px); }
+
+        /* 产品 Tab 切换 */
+        .tab-btn { padding: 0.75rem 1.5rem; border-radius: 9999px; font-size: 0.9rem; font-weight: 600; color: #94a3b8; cursor: pointer; transition: all 0.3s; border: 1px solid transparent; }
+        .tab-btn.active { background: #2563eb; color: white; border-color: #3b82f6; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
     </style>
 </head>
 <body class="pt-16">
@@ -80,186 +100,81 @@
     <script>
         const CONFIG = {
             siteInfo: {
-                title: "AI 智能体应用实战线下课",
-                logoText: "张兆华工作室",
+                title: "AI 智能体实战应用线下课",
+                logoText: "华哥架构",
                 qrCode: "./images/qrcode.jpg", 
                 wechatId: "huageLC",
                 contactBtnText: "立即咨询报名"
             },
             
+            // 导师介绍 (支持详情)
             instructor: {
                 name: "张兆华",
                 title: "实战派 AI 商业构建师",
                 image: "./images/avatar.jpg", 
-                shortDesc: ["创业多年，商业实战经验丰富。", "AI督导、AI销售、AI创作、AI军事、AI伴侣等多款智能体开发者，助力多家企业，无感 AI 转型。", "<b> 擅长用 AI 降本增效。</b>"],
-                detail: `<h3>实战经验</h3><p>拥有 7 年以上互联网创业经验。</p><h3>核心理念</h3><p>只讲实战的，<b>“AI 时代的商业应用打法”</b>。</p>`
+                shortDesc: ["创业多年，商业实战经验丰富。", "AI督导、AI销售、AI创作、AI军事、AI伴侣等多款智能体开发者。", "<b>擅长用 AI 降本增效。</b>"],
+                // 🔴 详情页内容 (支持 HTML)
+                detail: `
+<h3>实战经验</h3>
+拥有 7 年以上互联网创业经验，曾主导多个百万级项目的 AI 落地。
+<img src="./images/inst_detail.jpg">
+<h3>核心理念</h3>
+只讲实战的，<b>“AI 时代的商业应用打法”</b>。`
             },
 
-            cases: [
-                { 
-                    title: "医美	AI 销冠系统", 
-                    image: "./images/case1.jpg", 
-                    tag: "200人医美公司",
-                    result: "团队薪资成本下降，稳定性上升，销售能力大涨",
-                    desc: "我们将销冠谈单记录进行脱敏训练，构建AI销售+陪练模型，新人入职第一天即具备销冠 80% 的谈单能力，并借助陪练模型实现能力提升。"
+            // 🟢 多产品体系 (原课程大纲升级)
+            products: [
+                {
+                    id: "p1",
+                    name: "线下实战课", // Tab 名称
+                    desc: "从“思维认知”到“暗黑落地”，两天一夜硬核交付。",
+                    modules: [
+                        { title: "第一模块：认知重构", color: "text-blue-500", items: ["财富分水岭", "社会草台班子论", "如何让AI理解需求", "重大决策为何必须AI参与"] },
+                        { title: "第二模块：炼金秘诀", color: "text-purple-500", items: ["信任与许愿", "避开认知巨坑", "落地基本功", "数据分层技术", "OKR调教法"] },
+                        { title: "第三模块：AI实战场", color: "text-emerald-500", items: ["内容流水线", "资深面试官", "数字分身克隆", "团队销冠助手", "私人健康指导", "面相性格穿透"] },
+                        { title: "第四模块：暗黑级应用", color: "text-red-500", items: ["全息督察官", "合规性核查", "帝王决策术", "流程架构师", "防政变系统"] },
+                        { title: "第五模块：财富终局", color: "text-amber-500", items: ["AI时代思维特征", "跨界套利蓝图", "想象力生产力", "企业无感落地", "AI 赋能百人企业"] }
+                    ]
                 },
-                { 
-                    title: "心理	AI 督导系统", 
-                    image: "./images/case2.jpg", 
-                    tag: "心理行业",
-                    result: "督导成本立降 90%",
-                    desc: "实现了低成本+24小时贴身督导，复刻了行业大师的督导能力，并能模拟来访进行咨询师上岗前的预训练，提升咨询能力。"
+                {
+                    id: "p2",
+                    name: "企业代运营", // 第二个产品
+                    desc: "全流程自动化闭环设计，企业私有化部署。",
+                    modules: [
+                        { title: "业务拆解", color: "text-indigo-500", items: ["深度梳理企业SOP", "提取核心业务逻辑", "痛点诊断与流程重构"] },
+                        { title: "智能体搭建", color: "text-pink-500", items: ["定制开发 Dify 工作流", "自动获客/清洗/分发", "知识库私有化部署"] },
+                        { title: "数据闭环", color: "text-cyan-500", items: ["打通 CRM / 企微 / 钉钉", "数据实时看板", "员工绩效自动化考核"] }
+                    ]
                 }
             ],
 
-            courseModules: [
-                { title: "第一模块：认知重构——破除思维牢笼", color: "text-blue-500", items: ["<b>财富的分水岭：</b>为什么别人把 AI 当玩具，而我用它当“数字印钞机”？", "<b>社会草台班子：</b>AI对个人、企业和社会，会有什么巨大影响和价值？", "<b>如何让 AI 理解你的需求：</b>大多数人感觉AI不好用，真实原因是什么？", "<b>如何让 AI 帮你做决策：</b>重大决策和战略选择，为什么一定要 AI 参与进来？", "<b>财富增量的必然：</b>AI 如何给个体和管理者，创造新的财富增量？", "<b>偏见与傲慢：</b>阻碍多数人用 AI变现 的三大错误观点是什么？", "<b>AI 的高手视角：</b>使用 AI 巨额变现 或 降本增效，需要哪些前置条件？"] },
-                { title: "第二模块：炼金秘诀——调教出好用智能体的硬核逻辑", color: "text-purple-500", items: ["<b>信任与许愿：</b>阻碍你变现的不是 AI 技术，而是“不敢要求”与“不信任”", "<b>避开认知巨坑：</b>深挖大部分人错过 AI 红利的原因，以及把握机会的正确姿势", "<b>落地 AI 的基本认知：</b>知识库、提示词、智能体的关系和区别？", "<b>数据分层技术：</b>如何通过数据分层，让 AI 成为 100% 懂你的 “数字大脑” ？", "<b>提示词逻辑：</b>如何用OKR管理法，引导并调教 AI 出色完成任务 ？", "<b>拒绝“教人做事”：</b>只谈目标、不谈过程的帝王级 AI 管理手段" ] },
-                { title: "第三模块：AI实战场——改变产业结构的应用场景", color: "text-emerald-500", items: ["<b>内容流水线：</b>如何通过 AI 实现50倍效率、全自动的产出高质量爆款内容？", "<b>资深面试官：</b>如何通过 AI 精准高效的招人、选人、留人、挖人？", "<b>数字分身克隆：</b>如何复刻自己的数字分身，7*24小时服务客户或辅导团队？", "<b>团队销冠助手：</b>如何通过 AI 实现公司全员秒变销冠？", "<b>团队能力对齐：</b>AI如何快速复刻医美、咨询等行业私域员工的销售能力？", "<b>专治团队刺头：</b>如何通过 AI ，加倍提升团队的整体能力和稳定性？", "<b>私人健康指导：</b>如何通过 AI 实现“菲佣”级的贴身健康指导服务？", "<b>面相性格穿透：</b>如何利用 AI 进行步态、面相与语料分析，掌握关系中的主动权？", "<b>伴侣咨询功能：</b>如何通过 AI 疗愈alpha型创业者，内心深处的创伤和盲区？"] },
-                { title: "第四模块：暗黑级应用——AI 辅助领袖掌控力暴增", color: "text-red-500", items: ["<b>全息督察官：</b>如何用 AI 监督分公司、分店的的管理死角与乱象？", "<b>合规性核查：</b>如何用 AI 保障电销、医美或金融等行业的话术合规？", "<b>帝王决策术：</b>如何通过 AI 做出科学、精准的商业/管理等重大决策？", "<b>流程架构师：</b>如何通过AI 辅助团队进入自动运作模式，大量解放老板时间？", "<b>业务线拆解：</b>如何通过AI 深度研判复杂业务逻辑，找出核心节点？", "<b>跨部门协作：</b>如何通过AI 打通公司各部门之间的协作壁垒？", "<b>稳定性“审计”：</b>如何利用AI 实现垂直管理 3000 人的“领袖透视眼”？", "<b>防政变系统：</b>如何防止核心成员反水，避免老板面临委内瑞拉“马杜罗”式的结局？"] },
-                { title: "第五模块：财富终局——AI时代的跨界套利蓝图", color: "text-amber-500", items: ["<b>AI时代的思维：</b>能用 AI 实现极高变现的人，有哪些思维特征？", "<b>AI 带来的可能性：</b>有哪些领域，会因为AI 爆发巨大的财富机遇？", "<b>想象力是生产力：</b>如何通过“攻击”、“加密”与“禁忌话题”，提升你的 AI 使用力？", "<b>企业无感落地AI ：</b>无需全员费时费力学AI，3分钟即可落地企业的AI应用，长啥样？", "<b>AI 赋能百人企业：</b>年营收2亿的公司老板，愿意采用什么样的 AI 落地方案？", "<b>AI 效果的巩固：</b>如何持续让 AI 赋能个体或企业的长期增长？"] }
+            // 🟢 实战案例库 (支持图文详情)
+            cases: [
+                { 
+                    id: 1, title: "医美 AI 销冠系统", image: "./images/case1.jpg", tag: "200人医美公司", result: "业绩增长 30%",
+                    content: `<h3>背景</h3><p>医美行业销售流动性大...</p><img src="./images/case1_detail.jpg"><h3>解决方案</h3><p>构建销冠分身...</p>`
+                },
+                { 
+                    id: 2, title: "心理 AI 督导系统", image: "./images/case2.jpg", tag: "心理行业", result: "督导成本立降 90%",
+                    content: `<h3>痛点</h3><p>督导资源稀缺...</p><img src="./images/case2_detail.jpg"><h3>AI 赋能</h3><p>全天候 AI 督导...</p>`
+                }
             ],
 
+            // 🟢 文章库 (支持图文)
             articles: [
-                { id: 1, title: "老板必读：为什么AI 口号喊得响，但企业普遍难落地？", date: "2026-01-04", summary: "揭秘 AI 巨额变现的前置条件与底层逻辑，破除思维牢笼。", content: `<h3>为什么AI 口号喊得响，但企业普遍难落地？ 文：张兆华 </h3><p>作为老板，是不是挺焦虑的？看着自媒体和朋友圈里，铺天盖地的 AI 宣传，看着同行号称“人效翻倍”，你也坐不住了。
-
-你给员工买了大模型账号，请老师来做内训，甚至公司不工作培训AI，你担心错过AI的机会，你希望员工能使用AI，你语重心长地告诉大家：“拥抱变化，AI 是未来。”
-
-结果呢？时间过去了几个月，你钱花了不少，成本没降，效率也没提。员工私下里，甚至也颇有微词，觉得你在变相增加工作量。
-
-今天，我下个定论，凡是这种寄希望于员工自发学习、自发改变的“全员 AI 化”，在我看来，不仅是管理上的懒惰，更是一场注定失败的瞎折腾。 
-
-一、 传统方案的“四宗罪”：为什么你的 AI 落地会烂尾？
-
-我最近帮几家公司做 AI 落地推进时发现，绝大多数企业推行 AI，走的都是所谓的“传统方案”，这里面藏着四个巨大的死穴：
-
-1，极致的时间内耗
-
-你让员工学习 AI、搭建智能体，这本身就是反人性的。员工每天上班 8 小时，原本业务就满负荷，你现在让他每天再花 2 小时去研究那些晦涩的提示词系统和知识库搭建。这对员工来说，是“额外负担”；对你来说，你是在用高昂的薪资成本，供养一群业余选手去“试错”。
-
-2，隐形的财务黑洞
-
-每个员工用AI，每人每月会有 200 元左右的AI会员费和网络专线费用，这钱看起来不多。但如果你有 100 个销售，一年就是 24 万。更恶心的是，员工自己弄账号和网络，稍有不慎号就被封。这种不稳定的生产力，怎么支撑业务？
-
-3，数字资产的“定时炸弹”
-
-这是我最担心的，也是很多老板没意识到的。在传统方案里，公司的AI数据，是放在员工个人电脑或账号里的，这就意味着员工在职期间可能误触导致AI工具失灵，一旦员工离职，他还可能带走公司辛苦投喂出来的销售模型和话术逻辑。这对公司的数字资产安全来说，是极其危险的。
-
-4，管理上的盲区
-
-不同的AI账号，分布在多位员工手里，那整个公司，谁在用 AI？谁用得好？AI在跟客户聊什么？老板完全看不见。在管理学上，无法被量化和监管的事物，就等于不存在。这种方案下，老板根本不知道AI实际上对企业的帮助有多大。
-
-二、 我的AI落地方案
-
-我的思路一向犀利：不要试图改变员工，要直接改变工具。
-
-拿销售智能体的AI落地方案举例，在“张兆华工作室”提供的方案里，我们彻底翻转了老板逻辑。
-
-1，极致的“无感化”落地
-
-员工不需要懂什么是大模型，不需要搞定APP、账号、网络和AI会员充值，更不需要学习复杂的智能体搭建。
-
-他们只需要在手机或电脑上，打开公司发放的链接，输入老板给的授权码，把客户说的话粘贴给对话框，系统内置的AI大脑，就能瞬间吐出最顶尖的销售回复。
-
-这种“左手倒右手”的复制粘贴，让公司AI 落地的阻力降到了零，也让员工3分钟内掌握AI工具的使用。
-
-2. 数据主权的防御
-
-在张兆华工作室开发的AI系统里，员工碰不到任何训练AI智能体的核心数据。所有的业务逻辑、销冠经验、人格特征、工作逻辑，全部锁在老板的系统后台，对于员工的AI账户，老板也可以随时授权或撤权。
-
-员工能力强？OK，AI系统可以内化员工的能力，复制给所有员工；
-
-员工能力弱？OK，AI系统可以用最强员工的能力，辅助普通员工；
-
-员工要离职？OK，AI系统复制了员工能力，核心数据也都留在了公司；
-
-新员工入职？OK，AI系统直接上手用，换个人来，依然当“销冠”。
-
-铁打的AI，流水的兵。无论员工怎么变，AI始终保证着公司组织力的稳定和可控。
-
-3. 用一张 Excel 表，人性化管理全体员工
-
-这是对老板最方便的设计。老板只需要在自己的手机或电脑的Excel表里，就能实时调整全公司的AI销售风格和产品参数，也能随时授权或撤权。员工用了多少次AI，什么时间用的，数据都能完整的呈现出来。
-
-这意味着，每个公司，都低成本地拥有了自己的大数据。
-
-我拿销售部门举例：
-
-员工A：业绩好，平时几乎不用AI辅助销售，这说明员工A能力强，不用AI也能做好业务；
-
-员工B：业绩好，平时大量使用AI辅助销售，这说明员工B能力普通，但懂得善用工具提升自己；
-
-员工C：业绩差，平时几乎不用AI辅助销售，这说明员工C能力差，还不愿意虚心改变工作方式；
-
-员工D：业绩差，平时大量使用AI辅助销售，这说明员工D，要么拿着AI的答案无脑回复，要么问的问题质量太差，和业务无关。
-
-相比之前老板不知道员工的AI实际使用情况，AI以张兆华工作室提供的方案介入企业业务中后，老板对员工的行为数据，更加透明了，也更懂得不同员工需要什么样的辅助和指导，管理起来心理更有底了。
-
-4. 极致降本：从 200 元到“按量支付”
-
-之前的方案，每人每月要付出 200 元的AI 使用成本，而且团队里AI用的多的员工，感觉不够用就被限制使用了，用的少，甚至不用AI的员工，又白白浪费了每月200元的AI会员费，而且因为网络不稳定，动不动几小时甚至一整天都无法使用AI，这对团队的工作效率，都是极大的浪费。
-
-在张兆华工作室提供的方案里，公司的AI使用成本是按量支付的，对于老板来说，用了才付费，不用不付费，公司的每一分钱都花在了真实的业务产出，而不是虚无缥缈的固定订阅费里，这极大地降低企业的AI使用成本。
-
-三、 AI到底如何帮助普通企业和团队，降本的增效？
-
-旧场景的重塑和新场景的延展。
-
-1，人类能力的无限克隆
-
-你公司里那个月入 3-5万的销冠，他怎么做到的，可能自己都讲不清楚，其他员工也学不会，但是通过对聊天记录的分析，AI可以3分钟内把他的话术、情绪、无意识语言、方法论、工作sop整理出来，你瞬间就能拥有一百个、一千个“销冠分身”，即使员工离职，能力依旧留存在系统里。 
-
-2，消灭“培训期”的沉没成本
-
-以前招个新人，培训、带教、转正，至少三个月。现在呢？新员工入职，打开 AI 系统即可上岗。因为 AI 会告诉他客户说这句话是什么意思，下一句该回什么，公司不再依赖人才的灵光一现，而是依赖系统的整体确定性。
-
-3，精准招聘和有效管理
-
-之前团队想招兵买马，完全依赖于老板的用人经验，这导致团队扩张中的试错成本极高，请神容易送神难，一旦招到了不合适的人，给公司造成的经济损失和时间损失非常大。
-
-而且工作期间，员工能力弱的话，培训起来很费劲，能力强的话，又容易功高震主，不服管理，整个组织摩擦极大，内耗极大。
-
-但在AI时代，结合公司投喂过的工作数据，从看简历、面试、岗前考核，都可以让AI介入，用AI 的大脑，帮助公司精确的识别最适合的人才；人才上岗之后，也只需要配合AI即可完成简单工作即可。整个公司，最核心的数据和能力都在AI大脑里，每个人在岗位上给公司做的贡献都差不多，不会出现一个人扛起公司一半销售额的局面，公司也可以低成本的用新人替代老人。
-
-这种情况下，还有谁会不服管理？还有谁会笨到用离职要挟老板？
-
-四、 最后的忠告：关于系统的不足与未来
-
-AI在公司使用初期，可能会有两个短板：
-
-一是，如果你的原始数据投喂量不够，AI 可能不够“懂你”；
-
-二是，如果你的工作标准本身混乱，则需要花时间调整，AI才能发挥出最大效果。
-
-虽然是缺点，但反过来想，也正是AI的魅力所在，AI不是统一的标准，而是会根据你的投喂和要求，呈现出你所需要的样子。你越能清晰描述自己的需求，AI就越能配合你的工作。只要熬过初期的迭代，你会发现，你拥有的不是一个工具，而是一个越用越聪明的资产。
-
-五、结语
-
-大多数人，还在用旧时代的管理思维经营公司时，聪明的老板已经开始构建自己的AI化组织了。如果你厌倦了管理中人的不确定性和高成本，如果你想让你的团队真正拥有“数字化的竞争力”，如果你想把握住AI 时代的红利……那么尽早入局并了解AI，是至关重要的事。
-
-（全文完）
-
-如果你对这AI落地企业感兴趣，或者想聊聊你的企业如何实现“无感 AI 化”，那欢迎主动链接。</p>` },
-                { id: 2, title: "暗黑实战：如何用 AI 实现 3000 人团队的垂直管理？", date: "2026-01-08", summary: "全网不敢讲的“帝王术”，用 AI 打造领袖级的全息督察系统。", content: `<h3>管理者的痛点</h3><p>团队越大，信息茧房越严重...</p>` }
+                { id: 1, title: "老板必读：为什么AI 口号喊得响？", date: "2026-01-04", summary: "揭秘 AI 巨额变现的前置条件。", content: `<h3>财富的分水岭</h3><p>真正的高手...</p><img src="./images/art1.jpg">` }
             ],
 
-            about: { desc: "我们是一家专注于 <b>AI 商业落地</b> 的实战机构。只关注 AI 如何在<b>销售、管理、决策</b>等核心商业环节产生真金白银的价值。" },
-            
-            targets: [
-                "渴望被AI赋能的超级个体", "被团队管理内耗折磨的老板", "寻求新赛道的职场中高层", "想了解 AI 风口的投资者",
-                "陷入流量焦虑的自媒体IP", "被销售和交付累到崩溃的知识工作者", "想把握住 AI 时代巨大红利的野心家"
-            ],
-
-            eventInfo: {
-                time: "2026年01月31日-02月01日 (两天一夜)",
-                location: "河南省郑州市",
-                price: "9980元",
-                offer: "两人同行，各免500"
+            // 🟢 关于我们 (支持详情)
+            about: { 
+                desc: "我们是一家专注于 <b>AI 商业落地</b> 的实战机构。",
+                detail: `<p>张兆华工作室成立于 2023 年...</p><img src="./images/team.jpg"><p>我们要做的，不是教你用 AI 画图，而是教你用 AI 赚钱。</p>`
             },
-
-            benefits: ["<b>技术突破：</b>一站式解决顶尖大模型网络/账号/充值问题", "<b>实操指导：</b>现场修正学员搭建问题", "<b>自由构建：</b>获得高规格提示词/知识库模板", "<b>从零到一：</b>学习搭建符合自己需求的智能体", "<b>认知重塑：</b>掌握AI时代的逻辑规则", "<b>变现达人：</b>优化创业变现路径", "<b>降本增效：</b>提升组织效率"],
             
-            promise: ["1. 课程现场，你可以听到很多全网没人讲过的 AI实战玩法；", "2. 第一天学完，觉得没收获，当天微信说一声，可无理由、全额退款。<br><span class='text-xs opacity-80'>无理由退款政策是我们线下课的一贯标准，这是张兆华工作室对“课程实战价值”的极致自信，也是对消费者权益的负责任保障。</span>"]
+            targets: ["渴望被AI赋能的超级个体", "被团队管理内耗折磨的老板", "寻求新赛道的职场中高层", "想了解 AI 风口的投资者"],
+            eventInfo: { time: "2026年01月31日-02月01日 (两天一夜)", location: "河南省郑州市", price: "9980元", offer: "两人同行，各免500" },
+            benefits: ["<b>技术突破：</b>一站式解决账号问题", "<b>实操指导：</b>现场修正搭建问题", "<b>自由构建：</b>获高规提示词模板", "<b>变现达人：</b>优化商业路径", "<b>降本增效：</b>提升组织效率"],
+            promise: ["1. 课程现场，你可以听到很多全网没人讲过的 AI实战玩法；", "2. 第一天学完，觉得没收获，当天微信说一声，可无理由、全额退款。"]
         };
     </script>
 
@@ -270,7 +185,7 @@ AI在公司使用初期，可能会有两个短板：
                 <i class="fas fa-cube text-blue-500"></i> <span id="nav-logo"></span>
             </div>
             <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-300">
-                <a href="#course" class="hover:text-blue-500 transition">课程大纲</a>
+                <a href="#products" class="hover:text-blue-500 transition">产品体系</a>
                 <a href="#cases" class="hover:text-blue-500 transition">实战案例</a>
                 <a href="#articles" class="hover:text-blue-500 transition">深度干货</a>
                 <a href="#instructor" class="hover:text-blue-500 transition">讲师介绍</a>
@@ -286,7 +201,7 @@ AI在公司使用初期，可能会有两个短板：
         <div id="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
         <div id="mobile-menu-panel">
             <div class="absolute top-6 right-6"><button onclick="toggleMobileMenu()" class="text-white text-2xl"><i class="fas fa-times"></i></button></div>
-            <a href="#course" class="menu-link" onclick="toggleMobileMenu()">课程大纲</a>
+            <a href="#products" class="menu-link" onclick="toggleMobileMenu()">产品体系</a>
             <a href="#cases" class="menu-link" onclick="toggleMobileMenu()">实战案例</a>
             <a href="#articles" class="menu-link" onclick="toggleMobileMenu()">深度干货</a>
             <a href="#instructor" class="menu-link" onclick="toggleMobileMenu()">讲师介绍</a>
@@ -294,34 +209,38 @@ AI在公司使用初期，可能会有两个短板：
         </div>
     </nav>
 
-    <!-- 2. Hero 区域 -->
-    <header class="hero-section flex flex-col justify-center items-center text-center px-6">
-        <div class="max-w-4xl mx-auto backdrop-blur-sm p-8 rounded-3xl border border-white/10 bg-black/40">
+    <!-- 2. Hero 区域 (优化版) -->
+    <header class="hero-section text-center px-6">
+        <div class="relative z-10 max-w-4xl mx-auto backdrop-blur-sm p-8 rounded-3xl border border-white/10 bg-black/40 mt-[250px] md:mt-0">
             <div class="inline-block px-4 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-6 border border-blue-500/30 animate-pulse">2026 线下实战营</div>
             <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight" id="course-title"></h1>
             <p class="text-slate-300 text-lg mb-8 max-w-2xl mx-auto">从“思维认知”到“暗黑落地”，全网硬核实战交付。</p>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#course" class="px-8 py-3 bg-blue-600 text-white rounded-full font-bold shadow-lg shadow-blue-600/30 hover:bg-blue-500 transition transform hover:-translate-y-1">查看课程大纲</a>
+                <a href="#products" class="px-8 py-3 bg-blue-600 text-white rounded-full font-bold shadow-lg shadow-blue-600/30 hover:bg-blue-500 transition transform hover:-translate-y-1">查看产品体系</a>
                 <a href="#info" class="px-8 py-3 bg-white/10 backdrop-blur text-white border border-white/20 rounded-full font-bold hover:bg-white/20 transition transform hover:-translate-y-1">开课信息</a>
             </div>
         </div>
     </header>
 
-    <!-- 3. 课程大纲 (优化版：紧凑排版) -->
-    <section id="course" class="py-20">
+    <!-- 3. 产品体系 (支持多 Tab 切换) -->
+    <section id="products" class="py-20">
         <div class="max-w-4xl mx-auto px-4">
-            <div class="text-center"><h2 class="section-title">五大核心模块深度赋能</h2></div>
-            <div class="dark-card p-8 md:p-12 bg-slate-800/50">
-                <div id="course-content-list"></div>
-                <div class="mt-8 pt-8 border-t border-gray-700/20 text-center text-slate-500 text-sm">更多 AI 强大功能和实战应用场景，课程现场碰撞和教学......</div>
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-white mb-8 section-title">产品与服务体系</h2>
+                <div class="flex justify-center gap-4 flex-wrap" id="product-tabs"></div>
+            </div>
+            
+            <div class="dark-card p-8 md:p-12 bg-slate-800/50 min-h-[400px]">
+                <div id="product-desc" class="text-center text-slate-400 mb-10 text-lg border-b border-gray-700/50 pb-6"></div>
+                <div id="course-content-list" class="space-y-8 animate-fadeIn"></div>
             </div>
         </div>
     </section>
 
-    <!-- 4. 实战案例 -->
+    <!-- 4. 实战案例 (瀑布流 + 详情) -->
     <section id="cases" class="py-20 bg-slate-900/50">
         <div class="max-w-5xl mx-auto px-4">
-            <div class="text-center"><h2 class="section-title">标杆实战案例</h2></div>
+            <div class="text-center"><h2 class="section-title">标杆实战案例库</h2></div>
             <div id="cases-list" class="grid md:grid-cols-2 gap-8"></div>
         </div>
     </section>
@@ -342,26 +261,21 @@ AI在公司使用初期，可能会有两个短板：
         </div>
     </section>
 
-    <!-- 6. 开课信息 & 承诺 -->
+    <!-- 6. 开课信息 -->
     <section id="info" class="py-20">
         <div class="max-w-4xl mx-auto px-6">
             <div class="dark-card p-8 md:p-12 bg-gradient-to-br from-slate-800 to-slate-900 relative overflow-hidden text-center">
                 <div class="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full blur-[80px]"></div>
-                
                 <h2 class="text-3xl font-bold text-white mb-8">开课信息</h2>
                 <div class="grid md:grid-cols-2 gap-8 mb-10 text-left bg-white/5 p-6 rounded-2xl border border-white/5">
                     <div id="event-info-left"></div>
                     <div id="event-info-right"></div>
                 </div>
-
                 <div class="bg-white/5 p-6 rounded-2xl border border-white/10 mb-8 text-left">
                     <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-shield-alt text-green-400"></i> 硬核承诺</h4>
                     <ul id="promise-list" class="space-y-4 text-slate-300 text-sm"></ul>
                 </div>
-
-                <button onclick="toggleContact()" class="w-full md:w-auto px-12 py-4 bg-blue-600 text-white font-bold text-lg rounded-full hover:bg-blue-500 transition shadow-lg shadow-blue-500/30">
-                    立即报名锁定席位
-                </button>
+                <button onclick="toggleContact()" class="w-full md:w-auto px-12 py-4 bg-blue-600 text-white font-bold text-lg rounded-full hover:bg-blue-500 transition shadow-lg shadow-blue-500/30">立即报名锁定席位</button>
             </div>
         </div>
     </section>
@@ -384,7 +298,7 @@ AI在公司使用初期，可能会有两个短板：
                     <p class="text-blue-400 font-bold mb-6" id="inst-title"></p>
                     <div id="inst-desc" class="space-y-4 text-slate-400 leading-relaxed text-sm"></div>
                     <div class="mt-8 flex gap-4 justify-center md:justify-start">
-                         <button onclick="openInstructorModal()" class="px-6 py-2 border border-slate-500/30 text-slate-300 rounded-full hover:bg-slate-500/10 transition text-sm">查看详细履历</button>
+                         <button onclick="openDetail('instructor')" class="px-6 py-2 border border-slate-500/30 text-slate-300 rounded-full hover:bg-slate-500/10 transition text-sm">查看详细履历</button>
                          <button onclick="toggleContact()" class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-500 transition text-sm font-bold">添加微信</button>
                     </div>
                 </div>
@@ -394,10 +308,11 @@ AI在公司使用初期，可能会有两个短板：
 
     <!-- 9. 关于我们 -->
     <section id="about" class="py-20 bg-slate-900/30">
-        <div class="max-w-2xl mx-auto px-4 text-center">
+        <div class="max-w-3xl mx-auto px-4 text-center">
             <h2 class="section-title">关于我们</h2>
-            <p id="about-desc" class="text-lg text-slate-400 leading-relaxed mb-12"></p>
-            <div class="grid grid-cols-3 gap-4">
+            <p id="about-desc" class="text-lg text-slate-400 leading-relaxed mb-8"></p>
+            <button onclick="openDetail('about')" class="text-blue-400 hover:text-blue-300 underline underline-offset-4">查看公司详细介绍</button>
+            <div class="grid grid-cols-3 gap-4 mt-12">
                 <div class="p-6 dark-card"><div class="text-3xl mb-3">🎯</div><div class="font-bold text-white">实战</div></div>
                 <div class="p-6 dark-card"><div class="text-3xl mb-3">💡</div><div class="font-bold text-white">落地</div></div>
                 <div class="p-6 dark-card"><div class="text-3xl mb-3">🚀</div><div class="font-bold text-white">增效</div></div>
@@ -409,8 +324,27 @@ AI在公司使用初期，可能会有两个短板：
         <p>© 2026 华哥架构工作室 | All Rights Reserved</p>
     </footer>
 
-    <!-- 弹窗系统 -->
-    <div id="contact-modal" class="modal-overlay" onclick="closeModal(event, 'contact-modal')">
+    <!-- ==================== 弹窗系统 ==================== -->
+
+    <!-- 通用详情弹窗 (文章/案例/导师) -->
+    <div id="detail-modal" class="modal-overlay" onclick="closeModal(event, 'detail-modal')">
+        <div class="bg-slate-900 w-full max-w-2xl h-[85vh] md:rounded-2xl shadow-2xl relative flex flex-col border border-slate-700 overflow-hidden">
+            <div class="modal-header">
+                <h2 class="text-base font-bold text-white truncate pr-4" id="modal-title"></h2>
+                <button onclick="document.getElementById('detail-modal').classList.remove('show'); document.body.classList.remove('modal-open');" class="text-slate-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            </div>
+            <div id="modal-content" class="p-8 overflow-y-auto article-body bg-slate-800 flex-1 text-sm"></div>
+            <!-- 悬浮胶囊按钮 -->
+            <div class="float-btn-container">
+                <button onclick="toggleContact()" class="float-btn">
+                    <i class="fab fa-weixin"></i> 加华哥微信交流
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 二维码弹窗 (Z-Index 20000，最高) -->
+    <div id="contact-modal" class="modal-overlay" style="z-index: 20000;" onclick="closeModal(event, 'contact-modal')">
         <div class="bg-white p-8 rounded-2xl max-w-sm w-[90%] text-center shadow-2xl relative animate-up">
             <button onclick="toggleContact()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-900"><i class="fas fa-times text-xl"></i></button>
             <h3 class="text-xl font-bold text-slate-900 mb-2">扫码咨询 / 报名</h3>
@@ -419,37 +353,7 @@ AI在公司使用初期，可能会有两个短板：
             <div class="py-3 px-4 rounded-xl flex justify-between items-center bg-slate-50 cursor-pointer" onclick="copyWechat()">
                 <span class="text-slate-500 text-xs">微信号：</span><span class="font-mono font-bold text-slate-800" id="modal-wechat"></span><i class="fas fa-copy text-blue-500"></i>
             </div>
-            <p id="copy-tip" class="text-[10px] text-green-500 mt-2 h-4 opacity-0 transition">已复制</p>
-        </div>
-    </div>
-    <div id="article-modal" class="modal-overlay" onclick="closeModal(event, 'article-modal')">
-        <div class="bg-slate-900 w-full max-w-2xl h-[85vh] md:rounded-2xl shadow-2xl relative flex flex-col border border-slate-700 overflow-hidden">
-            <div class="modal-header">
-                <h2 class="text-base font-bold text-white truncate pr-4" id="art-title"></h2>
-                <button onclick="document.getElementById('article-modal').classList.remove('show'); document.body.classList.remove('modal-open');" class="text-slate-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
-            </div>
-            <div id="art-content" class="p-8 overflow-y-auto article-body bg-slate-800 flex-1 text-sm"></div>
-            <div class="p-4 border-t border-slate-700 bg-slate-900 text-center flex-shrink-0">
-                <button onclick="toggleContact()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-500 transition">觉得有价值？加华哥交流</button>
-            </div>
-        </div>
-    </div>
-    <div id="instructor-modal" class="modal-overlay" onclick="closeModal(event, 'instructor-modal')">
-        <div class="bg-slate-900 w-full max-w-xl h-[80vh] md:rounded-2xl relative border border-slate-700 flex flex-col overflow-hidden">
-             <div class="modal-header justify-end">
-                <button onclick="document.getElementById('instructor-modal').classList.remove('show'); document.body.classList.remove('modal-open');" class="text-slate-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
-            </div>
-            <div class="p-8 overflow-y-auto flex-1 bg-slate-800">
-                <div class="text-center mb-6">
-                    <img id="modal-inst-img" class="w-24 h-24 rounded-full mx-auto mb-3 border-2 border-blue-500">
-                    <h3 class="text-2xl font-bold text-white">华哥</h3>
-                    <p class="text-blue-400 text-sm">AI 商业架构师</p>
-                </div>
-                <div id="inst-detail-content" class="article-body text-sm"></div>
-            </div>
-            <div class="p-4 border-t border-slate-700 bg-slate-900 text-center flex-shrink-0">
-                <button onclick="toggleContact()" class="w-full bg-blue-600 text-white py-3 rounded-xl font-bold hover:bg-blue-500 transition">预约咨询</button>
-            </div>
+            <p id="copy-tip" class="text-[10px] text-green-500 mt-2 h-4 opacity-0 transition">已复制微信号</p>
         </div>
     </div>
 
@@ -462,19 +366,38 @@ AI在公司使用初期，可能会有两个短板：
             document.getElementById('modal-qr').src = d.siteInfo.qrCode;
             document.getElementById('modal-wechat').innerText = d.siteInfo.wechatId;
 
-            // 课程模块渲染 (v16 紧凑版)
-            const courseDiv = document.getElementById('course-content-list');
-            d.courseModules.forEach(mod => {
-                const itemsHtml = mod.items.map(t => `<li class="flex items-start gap-2 mb-2 text-slate-300 text-sm leading-snug"><i class="fas fa-angle-right ${mod.color.replace('bg-','text-')} mt-1 flex-shrink-0 text-xs"></i> <span>${t}</span></li>`).join('');
-                courseDiv.innerHTML += `
-                    <div class="mb-10 last:mb-0">
-                        <div class="flex items-center gap-3 mb-4 border-b border-white/10 pb-2">
-                            <span class="w-1.5 h-6 ${mod.color.replace('text-','bg-')} rounded-full"></span>
-                            <h3 class="text-xl font-bold text-white tracking-wide">${mod.title}</h3>
+            // 1. 初始化产品 Tabs
+            const tabsContainer = document.getElementById('product-tabs');
+            d.products.forEach((prod, index) => {
+                const btn = document.createElement('button');
+                btn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
+                btn.innerText = prod.name;
+                btn.onclick = () => switchProduct(index);
+                tabsContainer.appendChild(btn);
+            });
+            switchProduct(0); // 默认显示第一个产品
+
+            // 2. 渲染案例
+            const casesDiv = document.getElementById('cases-list');
+            d.cases.forEach((c, index) => {
+                casesDiv.innerHTML += `
+                    <div onclick="openDetail('case', ${index})" class="dark-card overflow-hidden group cursor-pointer hover:border-blue-500/30">
+                        <div class="h-48 overflow-hidden relative">
+                            <img src="${c.image}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105 img-placeholder" alt="Case">
+                            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-900 to-transparent p-4 pt-10"><span class="bg-blue-600 text-white text-[10px] px-2 py-1 rounded font-bold uppercase">${c.tag}</span></div>
                         </div>
-                        <ul class="grid md:grid-cols-2 gap-x-8 gap-y-1">${itemsHtml}</ul>
-                    </div>
-                `;
+                        <div class="p-6">
+                            <h3 class="text-xl font-bold text-white mb-2">${c.title}</h3>
+                            <p class="text-green-400 font-bold text-sm mb-3"><i class="fas fa-chart-line mr-1"></i> ${c.result}</p>
+                            <p class="text-slate-400 text-sm leading-relaxed line-clamp-2">${c.desc}</p>
+                        </div>
+                    </div>`;
+            });
+
+            // 3. 渲染文章
+            const artList = document.getElementById('articles-list');
+            d.articles.forEach((a, index) => {
+                artList.innerHTML += `<div onclick="openDetail('article', ${index})" class="dark-card p-6 cursor-pointer group h-full flex flex-col"><div class="mb-4"><span class="text-xs text-blue-400 font-mono bg-blue-900/30 px-2 py-1 rounded">${a.date}</span></div><h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition mb-3">${a.title}</h3><p class="text-sm text-slate-400 line-clamp-3 flex-1 mb-4">${a.summary}</p><div class="pt-4 border-t border-slate-700 text-xs font-bold text-slate-500 flex justify-between items-center"><span>阅读全文</span> <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i></div></div>`;
             });
 
             document.getElementById('targets-list').innerHTML = d.targets.map(t => `<div class="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/5 text-slate-300 text-sm"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>${t}</div>`).join('');
@@ -485,23 +408,40 @@ AI在公司使用初期，可能会有两个短板：
             document.getElementById('event-info-left').innerHTML = `<div class="mb-4"><div class="text-xs text-slate-400 mb-1">开课时间</div><div class="text-white font-bold">${info.time}</div></div><div><div class="text-xs text-slate-400 mb-1">开课地点</div><div class="text-white font-bold">${info.location}</div></div>`;
             document.getElementById('event-info-right').innerHTML = `<div class="mb-4"><div class="text-xs text-slate-400 mb-1">学习费用</div><div class="text-2xl text-blue-400 font-bold">${info.price}</div></div><div><div class="text-xs text-slate-400 mb-1">优惠政策</div><div class="text-amber-400 font-bold border border-amber-500/30 bg-amber-500/10 px-2 py-1 rounded inline-block text-xs">${info.offer}</div></div>`;
 
-            const casesDiv = document.getElementById('cases-list');
-            d.cases.forEach(c => {
-                casesDiv.innerHTML += `<div class="dark-card overflow-hidden group cursor-pointer hover:border-blue-500/30"><div class="h-48 overflow-hidden relative"><img src="${c.image}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105 img-placeholder" alt="Case"><div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-900 to-transparent p-4 pt-10"><span class="bg-blue-600 text-white text-[10px] px-2 py-1 rounded font-bold uppercase">${c.tag}</span></div></div><div class="p-6"><h3 class="text-xl font-bold text-white mb-2">${c.title}</h3><p class="text-green-400 font-bold text-sm mb-3"><i class="fas fa-chart-line mr-1"></i> ${c.result}</p><p class="text-slate-400 text-sm leading-relaxed">${c.desc}</p></div></div>`;
-            });
-
-            const artList = document.getElementById('articles-list');
-            d.articles.forEach((a, index) => {
-                artList.innerHTML += `<div onclick="openArticle(${index})" class="dark-card p-6 cursor-pointer group h-full flex flex-col"><div class="mb-4"><span class="text-xs text-blue-400 font-mono bg-blue-900/30 px-2 py-1 rounded">${a.date}</span></div><h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition mb-3">${a.title}</h3><p class="text-sm text-slate-400 line-clamp-3 flex-1 mb-4">${a.summary}</p><div class="pt-4 border-t border-slate-700 text-xs font-bold text-slate-500 flex justify-between items-center"><span>阅读全文</span> <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i></div></div>`;
-            });
-
             document.getElementById('inst-name').innerText = d.instructor.name;
             document.getElementById('inst-title').innerText = d.instructor.title;
             document.getElementById('inst-img').src = d.instructor.image;
             document.getElementById('inst-desc').innerHTML = d.instructor.shortDesc.map(p => `<p>${p}</p>`).join('');
-            document.getElementById('modal-inst-img').src = d.instructor.image;
             document.getElementById('about-desc').innerHTML = d.about.desc;
         });
+
+        // 切换产品逻辑
+        function switchProduct(index) {
+            const prod = CONFIG.products[index];
+            document.getElementById('product-desc').innerText = prod.desc;
+            
+            // 更新 Tab 样式
+            const tabs = document.getElementById('product-tabs').children;
+            for(let i=0; i<tabs.length; i++) {
+                tabs[i].className = `tab-btn ${i === index ? 'active' : ''}`;
+            }
+
+            // 渲染模块
+            const container = document.getElementById('course-content-list');
+            container.innerHTML = "";
+            prod.modules.forEach(mod => {
+                const itemsHtml = mod.items.map(t => `<li class="flex items-start gap-2 mb-2 text-slate-300 text-sm leading-snug"><i class="fas fa-angle-right ${mod.color.replace('bg-','text-')} mt-1 flex-shrink-0 text-xs"></i> <span>${t}</span></li>`).join('');
+                container.innerHTML += `
+                    <div class="mb-10 last:mb-0 animate-fadeIn">
+                        <div class="flex items-center gap-3 mb-4 border-b border-white/10 pb-2">
+                            <span class="w-1.5 h-6 ${mod.color.replace('text-','bg-')} rounded-full"></span>
+                            <h3 class="text-xl font-bold text-white tracking-wide">${mod.title}</h3>
+                        </div>
+                        <ul class="grid md:grid-cols-2 gap-x-8 gap-y-1">${itemsHtml}</ul>
+                    </div>
+                `;
+            });
+        }
 
         function toggleMobileMenu() { 
             document.getElementById('mobile-menu-panel').classList.toggle('open');
@@ -512,22 +452,37 @@ AI在公司使用初期，可能会有两个短板：
             if (m.style.display === 'flex') { m.style.display = 'none'; document.body.classList.remove('modal-open'); } 
             else { m.style.display = 'flex'; document.body.classList.add('modal-open'); }
         }
-        function openArticle(index) {
-            document.getElementById('art-title').innerText = CONFIG.articles[index].title;
-            document.getElementById('art-content').innerHTML = CONFIG.articles[index].content;
-            toggleModal('article-modal', true);
+        
+        // 统一详情弹窗
+        function openDetail(type, index) {
+            let title = "", content = "";
+            if (type === 'article') {
+                title = CONFIG.articles[index].title;
+                content = CONFIG.articles[index].content;
+            } else if (type === 'case') {
+                title = CONFIG.cases[index].title;
+                content = CONFIG.cases[index].content;
+            } else if (type === 'instructor') {
+                title = CONFIG.instructor.name;
+                content = CONFIG.instructor.detail;
+            } else if (type === 'about') {
+                title = "关于我们";
+                content = CONFIG.about.detail;
+            }
+            
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-content').innerHTML = content;
+            const m = document.getElementById('detail-modal');
+            m.classList.add('show');
+            document.body.classList.add('modal-open');
         }
-        function openInstructorModal() {
-            document.getElementById('inst-detail-content').innerHTML = CONFIG.instructor.detail;
-            toggleModal('instructor-modal', true);
-        }
-        function toggleModal(id, show) {
-            const m = document.getElementById(id);
-            if(show) { m.classList.add('show'); document.body.classList.add('modal-open'); }
-            else { m.classList.remove('show'); document.body.classList.remove('modal-open'); }
-        }
+        
         function closeModal(e, id) { 
-            if (e.target.id === id) { toggleModal(id, false); if(id==='contact-modal') document.getElementById(id).style.display='none'; }
+            if (e.target.id === id) { 
+                document.getElementById(id).classList.remove('show');
+                document.body.classList.remove('modal-open');
+                if(id==='contact-modal') document.getElementById(id).style.display='none';
+            }
         }
         function copyWechat() { 
             navigator.clipboard.writeText(CONFIG.siteInfo.wechatId).then(() => { 
