@@ -10,7 +10,7 @@
     </script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: -apple-system, 'PingFang SC', sans-serif; background-color: #0f172a; color: #cbd5e1; }
+        body { font-family: -apple-system, 'PingFang SC', sans-serif; background-color: #0f172a; color: #cbd5e1; overflow-x: hidden; }
         .glass-nav { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
 
         /* 侧边栏 */
@@ -25,74 +25,69 @@
         #mobile-menu-panel.open { transform: translateX(0); }
         .menu-link { font-size: 1.1rem; font-weight: 600; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f8fafc; }
 
-        /* ★★★ Hero 图片适配 (PC不变，手机端优化) ★★★ */
+        /* Hero 图片适配 */
         .hero-section { position: relative; background-image: url('./images/banner.jpg'); background-repeat: no-repeat; display: flex; align-items: center; justify-content: center; }
-        
         @media (min-width: 768px) {
             .hero-section { background-size: cover; background-position: center; min-height: 600px; }
             .hero-section::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(15,23,42,0.3), #0f172a); }
         }
         @media (max-width: 767px) {
             .hero-section { 
-                background-size: 100% auto; /* 宽度撑满，高度自适应 */
-                background-position: center 60px; /* 让出导航栏 */
-                min-height: 550px; 
+                background-size: 100% auto; background-position: center 60px; min-height: 550px; 
                 align-items: flex-end; padding-bottom: 4rem; 
             }
-            .hero-section::before { 
-                content: ''; position: absolute; inset: 0; 
-                /* 渐变遮罩：只遮挡底部 40% */
-                background: linear-gradient(to bottom, transparent 60%, #0f172a 100%); 
-            }
+            .hero-section::before { content: ''; position: absolute; inset: 0; background: linear-gradient(to bottom, transparent 60%, #0f172a 100%); }
         }
 
-        /* 弹窗/抽屉 */
-        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
-        .modal-overlay.show { display: flex; animation: zoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
-        @keyframes zoomIn { from { transform: scale(0.96); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        body.modal-open { overflow: hidden; }
-
-        /* ★★★ 关键修复：二维码弹窗层级最高 ★★★ */
-        #contact-modal { z-index: 20000 !important; }
-
         /* 标题装饰 */
-        .section-title { position: relative; display: inline-block; margin-bottom: 3rem; font-size: 2rem; font-weight: 800; color: #f8fafc; letter-spacing: 1px; }
+        .section-title { position: relative; display: inline-block; margin-bottom: 2rem; font-size: 2rem; font-weight: 800; color: #f8fafc; letter-spacing: 1px; }
         .section-title::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: linear-gradient(90deg, #3b82f6, #8b5cf6); border-radius: 2px; }
 
-        /* 卡片样式 */
-        .dark-card { background: #1e293b; border-radius: 1.5rem; border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; }
+        /* 通用卡片样式 */
+        .dark-card { background: #1e293b; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; overflow: hidden; }
         .dark-card:hover { transform: translateY(-5px); box-shadow: 0 20px 40px -10px rgba(0,0,0,0.5); background: #263346; border-color: rgba(255,255,255,0.1); }
 
-        .module-card { margin-bottom: 2rem; padding: 1.5rem; background: rgba(30, 41, 59, 0.4); border: 1px solid rgba(255,255,255,0.05); border-radius: 1.5rem; }
-        .module-card:last-child { margin-bottom: 0; }
+        /* === 全屏二级页面 (List Page / Detail Page) === */
+        .sub-page-layer {
+            position: fixed; inset: 0; background: #0f172a; z-index: 100;
+            transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex; flex-direction: column;
+        }
+        .sub-page-layer.active { transform: translateX(0); }
         
-        /* ★★★ 文章详情排版 (自动换行+插图) ★★★ */
-        .article-body { font-size: 1rem; color: #cbd5e1; white-space: pre-wrap; padding-bottom: 100px; } /* 底部留白给悬浮按钮 */
-        .article-body h3 { font-size: 1.3em; font-weight: bold; margin-top: 2em; margin-bottom: 1em; color: #fff; border-left: 4px solid #3b82f6; padding-left: 12px; }
+        /* 列表容器 */
+        .page-scroll-area { flex: 1; overflow-y: auto; padding: 2rem 1rem; scroll-behavior: smooth; }
+        .page-header {
+            padding: 1rem; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between;
+            position: sticky; top: 0; z-index: 50;
+        }
+
+        /* 详情页排版 */
+        .article-body { font-size: 1rem; color: #cbd5e1; white-space: pre-wrap; max-width: 800px; mx-auto; padding-bottom: 100px; }
+        .article-body h3 { font-size: 1.4em; font-weight: bold; margin-top: 2em; margin-bottom: 1em; color: #fff; border-left: 4px solid #3b82f6; padding-left: 12px; }
         .article-body p { margin-bottom: 1.5em; line-height: 1.8; text-align: justify; }
         .article-body img { width: 100%; border-radius: 0.75rem; margin: 1.5rem 0; border: 1px solid rgba(255,255,255,0.1); }
         .article-body b { color: #fff; font-weight: 700; }
 
-        /* 弹窗头部 */
-        .modal-header { padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(30,41,59,0.95); position: sticky; top: 0; z-index: 20; }
-        
-        /* ★★★ 悬浮胶囊按钮 (解决遮挡问题) ★★★ */
-        .float-btn-container {
-            position: absolute; bottom: 2rem; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none; z-index: 50;
-        }
+        /* 悬浮按钮 */
+        .float-btn-container { position: absolute; bottom: 2rem; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none; z-index: 150; }
         .float-btn {
-            pointer-events: auto;
-            background: rgba(37, 99, 235, 0.9); backdrop-filter: blur(8px);
-            color: white; padding: 0.8rem 2.5rem; border-radius: 9999px;
-            font-weight: bold; box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.5);
-            transition: all 0.2s; border: 1px solid rgba(255,255,255,0.2);
-            font-size: 0.95rem; display: flex; items-center; gap: 0.5rem;
+            pointer-events: auto; background: rgba(37, 99, 235, 0.9); backdrop-filter: blur(8px);
+            color: white; padding: 0.8rem 2.5rem; border-radius: 9999px; font-weight: bold;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.5); transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.2); font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem;
         }
         .float-btn:hover { background: #3b82f6; transform: translateY(-2px); }
 
-        /* 产品 Tab 切换 */
-        .tab-btn { padding: 0.75rem 1.5rem; border-radius: 9999px; font-size: 0.9rem; font-weight: 600; color: #94a3b8; cursor: pointer; transition: all 0.3s; border: 1px solid transparent; }
-        .tab-btn.active { background: #2563eb; color: white; border-color: #3b82f6; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+        /* 弹窗层级管理 */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 20000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-overlay.show { display: flex; animation: zoomIn 0.25s ease-out; }
+        @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+        /* 产品模块列表样式 */
+        .module-item { border-left: 1px solid rgba(255,255,255,0.1); padding-left: 1.5rem; margin-bottom: 2rem; position: relative; }
+        .module-item::before { content: ''; position: absolute; left: -5px; top: 0; width: 9px; height: 9px; border-radius: 50%; background: #3b82f6; }
     </style>
 </head>
 <body class="pt-16">
@@ -107,80 +102,84 @@
                 contactBtnText: "立即咨询报名"
             },
             
-            // 导师介绍 (支持详情)
+            // 导师
             instructor: {
                 name: "张兆华",
                 title: "实战派 AI 商业构建师",
                 image: "./images/avatar.jpg", 
-                shortDesc: ["创业多年，商业实战经验丰富。", "AI督导、AI销售、AI创作、AI军事、AI伴侣等多款智能体开发者。", "<b>擅长用 AI 降本增效。</b>"],
-                // 🔴 详情页内容 (支持 HTML)
-                detail: `
-<h3>实战经验</h3>
-拥有 7 年以上互联网创业经验，曾主导多个百万级项目的 AI 落地。
-<img src="./images/inst_detail.jpg">
-<h3>核心理念</h3>
-只讲实战的，<b>“AI 时代的商业应用打法”</b>。`
+                shortDesc: ["创业多年，商业实战经验丰富。", "擅长用 AI 降本增效。", "AI督导、AI销售、AI创作等多款智能体开发者。"],
+                detail: `<h3>实战经验</h3><p>拥有 7 年以上互联网创业经验，曾主导多个百万级项目的 AI 落地...</p>`
             },
 
-            // 🟢 多产品体系 (原课程大纲升级)
+            // 产品数据 (首页展示卡片，点击进详情)
             products: [
                 {
                     id: "p1",
-                    name: "线下实战课", // Tab 名称
-                    desc: "从“思维认知”到“暗黑落地”，两天一夜硬核交付。",
+                    name: "线下实战课",
+                    tag: "热门",
+                    cover: "./images/prod_offline.jpg", // 建议配图
+                    desc: "两天一夜硬核交付，从“思维认知”到“暗黑落地”全流程解析。",
                     modules: [
-                        { title: "第一模块：认知重构", color: "text-blue-500", items: ["财富分水岭", "社会草台班子论", "如何让AI理解需求", "重大决策为何必须AI参与"] },
-                        { title: "第二模块：炼金秘诀", color: "text-purple-500", items: ["信任与许愿", "避开认知巨坑", "落地基本功", "数据分层技术", "OKR调教法"] },
-                        { title: "第三模块：AI实战场", color: "text-emerald-500", items: ["内容流水线", "资深面试官", "数字分身克隆", "团队销冠助手", "私人健康指导", "面相性格穿透"] },
-                        { title: "第四模块：暗黑级应用", color: "text-red-500", items: ["全息督察官", "合规性核查", "帝王决策术", "流程架构师", "防政变系统"] },
-                        { title: "第五模块：财富终局", color: "text-amber-500", items: ["AI时代思维特征", "跨界套利蓝图", "想象力生产力", "企业无感落地", "AI 赋能百人企业"] }
+                        { title: "第一模块：认知重构", items: ["财富分水岭", "社会草台班子论", "如何让AI理解需求", "重大决策为何必须AI参与"] },
+                        { title: "第二模块：炼金秘诀", items: ["信任与许愿", "避开认知巨坑", "落地基本功", "数据分层技术", "OKR调教法"] },
+                        { title: "第三模块：AI实战场", items: ["内容流水线", "资深面试官", "数字分身克隆", "团队销冠助手", "私人健康指导", "面相性格穿透"] },
+                        { title: "第四模块：暗黑级应用", items: ["全息督察官", "合规性核查", "帝王决策术", "流程架构师", "防政变系统"] },
+                        { title: "第五模块：财富终局", items: ["AI时代思维特征", "跨界套利蓝图", "想象力生产力", "企业无感落地", "AI 赋能百人企业"] }
                     ]
                 },
                 {
                     id: "p2",
-                    name: "企业代运营", // 第二个产品
-                    desc: "全流程自动化闭环设计，企业私有化部署。",
+                    name: "企业代运营",
+                    tag: "定制",
+                    cover: "./images/prod_ent.jpg",
+                    desc: "全流程自动化闭环设计，为企业量身打造私有化 AI 军团。",
                     modules: [
-                        { title: "业务拆解", color: "text-indigo-500", items: ["深度梳理企业SOP", "提取核心业务逻辑", "痛点诊断与流程重构"] },
-                        { title: "智能体搭建", color: "text-pink-500", items: ["定制开发 Dify 工作流", "自动获客/清洗/分发", "知识库私有化部署"] },
-                        { title: "数据闭环", color: "text-cyan-500", items: ["打通 CRM / 企微 / 钉钉", "数据实时看板", "员工绩效自动化考核"] }
+                        { title: "阶段一：业务拆解", items: ["深度梳理企业SOP", "提取核心业务逻辑", "痛点诊断与流程重构"] },
+                        { title: "阶段二：智能体搭建", items: ["定制开发 Dify 工作流", "自动获客/清洗/分发", "知识库私有化部署"] },
+                        { title: "阶段三：数据闭环", items: ["打通 CRM / 企微 / 钉钉", "数据实时看板", "员工绩效自动化考核"] }
                     ]
                 }
             ],
 
-            // 🟢 实战案例库 (支持图文详情)
+            // 案例与文章 (这里放前几个，后面代码会自动生成更多模拟数据)
             cases: [
-                { 
-                    id: 1, title: "医美 AI 销冠系统", image: "./images/case1.jpg", tag: "200人医美公司", result: "业绩增长 30%",
-                    content: `<h3>背景</h3><p>医美行业销售流动性大...</p><img src="./images/case1_detail.jpg"><h3>解决方案</h3><p>构建销冠分身...</p>`
-                },
-                { 
-                    id: 2, title: "心理 AI 督导系统", image: "./images/case2.jpg", tag: "心理行业", result: "督导成本立降 90%",
-                    content: `<h3>痛点</h3><p>督导资源稀缺...</p><img src="./images/case2_detail.jpg"><h3>AI 赋能</h3><p>全天候 AI 督导...</p>`
-                }
+                { id: 1, title: "医美 AI 销冠系统", image: "./images/case1.jpg", tag: "200人医美公司", result: "业绩增长 30%", content: `<h3>背景</h3><p>医美行业销售流动性大...</p>` },
+                { id: 2, title: "心理 AI 督导系统", image: "./images/case2.jpg", tag: "心理行业", result: "成本立降 90%", content: `<h3>痛点</h3><p>督导资源稀缺...</p>` }
             ],
-
-            // 🟢 文章库 (支持图文)
             articles: [
-                { id: 1, title: "老板必读：为什么AI 口号喊得响？", date: "2026-01-04", summary: "揭秘 AI 巨额变现的前置条件。", content: `<h3>财富的分水岭</h3><p>真正的高手...</p><img src="./images/art1.jpg">` }
+                { id: 1, title: "老板必读：为什么AI 口号喊得响？", date: "2026-01-04", summary: "揭秘 AI 巨额变现的前置条件。", content: `<h3>财富的分水岭</h3><p>真正的高手...</p>` }
             ],
 
-            // 🟢 关于我们 (支持详情)
-            about: { 
-                desc: "我们是一家专注于 <b>AI 商业落地</b> 的实战机构。",
-                detail: `<p>张兆华工作室成立于 2023 年...</p><img src="./images/team.jpg"><p>我们要做的，不是教你用 AI 画图，而是教你用 AI 赚钱。</p>`
-            },
-            
+            // 其他信息
+            about: { desc: "我们是一家专注于 <b>AI 商业落地</b> 的实战机构。", detail: `<p>张兆华工作室成立于 2023 年...</p>` },
             targets: ["渴望被AI赋能的超级个体", "被团队管理内耗折磨的老板", "寻求新赛道的职场中高层", "想了解 AI 风口的投资者"],
             eventInfo: { time: "2026年01月31日-02月01日 (两天一夜)", location: "河南省郑州市", price: "9980元", offer: "两人同行，各免500" },
-            benefits: ["<b>技术突破：</b>一站式解决账号问题", "<b>实操指导：</b>现场修正搭建问题", "<b>自由构建：</b>获高规提示词模板", "<b>变现达人：</b>优化商业路径", "<b>降本增效：</b>提升组织效率"],
-            promise: ["1. 课程现场，你可以听到很多全网没人讲过的 AI实战玩法；", "2. 第一天学完，觉得没收获，当天微信说一声，可无理由、全额退款。"]
+            benefits: ["技术突破：一站式解决账号问题", "实操指导：现场修正搭建问题", "自由构建：获高规提示词模板", "变现达人：优化商业路径"],
+            promise: ["1. 全网独家 AI 实战玩法", "2. 首日无收获，全额退款"]
         };
+
+        // ★★★ 自动生成模拟数据 (为了展示列表页效果) ★★★
+        // 生成 8 个额外案例
+        for(let i=3; i<=10; i++) {
+            CONFIG.cases.push({
+                id: i, title: `某行业 AI 落地案例展示 ${i}`, image: `./images/case${i%3 + 1}.jpg`, 
+                tag: "实战案例", result: "效率提升 500%", 
+                content: `<h3>案例背景 ${i}</h3><p>这是一个关于行业 ${i} 的深度落地案例...</p><p>此处展示详细的构建过程和数据对比。</p>`
+            });
+        }
+        // 生成 10 个额外文章
+        for(let i=2; i<=12; i++) {
+            CONFIG.articles.push({
+                id: i, title: `深度思考：AI 时代的商业逻辑重构 No.${i}`, date: `2026-01-${10+i}`, 
+                summary: `这是第 ${i} 篇关于 AI 落地实操的深度干货分享，建议收藏。`, 
+                content: `<h3>深度解析 ${i}</h3><p>在 AI 时代，我们必须重新审视...</p>`
+            });
+        }
     </script>
 
     <!-- 1. 导航栏 -->
-    <nav class="glass-nav fixed top-0 w-full z-50">
-        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between relative z-50">
+    <nav class="glass-nav fixed top-0 w-full z-40">
+        <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2 font-bold text-xl text-white cursor-pointer" onclick="window.scrollTo(0,0)">
                 <i class="fas fa-cube text-blue-500"></i> <span id="nav-logo"></span>
             </div>
@@ -189,7 +188,6 @@
                 <a href="#cases" class="hover:text-blue-500 transition">实战案例</a>
                 <a href="#articles" class="hover:text-blue-500 transition">深度干货</a>
                 <a href="#instructor" class="hover:text-blue-500 transition">讲师介绍</a>
-                <a href="#about" class="hover:text-blue-500 transition">关于我们</a>
             </div>
             <div class="flex items-center gap-4">
                 <button onclick="toggleContact()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-full text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-blue-500/20">
@@ -205,56 +203,63 @@
             <a href="#cases" class="menu-link" onclick="toggleMobileMenu()">实战案例</a>
             <a href="#articles" class="menu-link" onclick="toggleMobileMenu()">深度干货</a>
             <a href="#instructor" class="menu-link" onclick="toggleMobileMenu()">讲师介绍</a>
-            <a href="#about" class="menu-link" onclick="toggleMobileMenu()">关于我们</a>
         </div>
     </nav>
 
-    <!-- 2. Hero 区域 (优化版) -->
+    <!-- 2. Hero 区域 -->
     <header class="hero-section text-center px-6">
         <div class="relative z-10 max-w-4xl mx-auto backdrop-blur-sm p-8 rounded-3xl border border-white/10 bg-black/40 mt-[250px] md:mt-0">
             <div class="inline-block px-4 py-1 rounded-full bg-blue-500/20 text-blue-300 text-xs font-bold mb-6 border border-blue-500/30 animate-pulse">2026 线下实战营</div>
             <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-6 leading-tight" id="course-title"></h1>
             <p class="text-slate-300 text-lg mb-8 max-w-2xl mx-auto">从“思维认知”到“暗黑落地”，全网硬核实战交付。</p>
             <div class="flex flex-col sm:flex-row justify-center gap-4">
-                <a href="#products" class="px-8 py-3 bg-blue-600 text-white rounded-full font-bold shadow-lg shadow-blue-600/30 hover:bg-blue-500 transition transform hover:-translate-y-1">查看产品体系</a>
-                <a href="#info" class="px-8 py-3 bg-white/10 backdrop-blur text-white border border-white/20 rounded-full font-bold hover:bg-white/20 transition transform hover:-translate-y-1">开课信息</a>
+                <a href="#products" class="px-8 py-3 bg-blue-600 text-white rounded-full font-bold shadow-lg shadow-blue-600/30 hover:bg-blue-500 transition">探索产品体系</a>
+                <a href="#info" class="px-8 py-3 bg-white/10 backdrop-blur text-white border border-white/20 rounded-full font-bold hover:bg-white/20 transition">最近开课</a>
             </div>
         </div>
     </header>
 
-    <!-- 3. 产品体系 (支持多 Tab 切换) -->
+    <!-- 3. 产品体系 (入口展示) -->
     <section id="products" class="py-20">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold text-white mb-8 section-title">产品与服务体系</h2>
-                <div class="flex justify-center gap-4 flex-wrap" id="product-tabs"></div>
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="text-center mb-12">
+                <h2 class="section-title">产品与服务</h2>
+                <p class="text-slate-400">我们提供从个人成长到企业落地的全方位解决方案</p>
             </div>
-            
-            <div class="dark-card p-8 md:p-12 bg-slate-800/50 min-h-[400px]">
-                <div id="product-desc" class="text-center text-slate-400 mb-10 text-lg border-b border-gray-700/50 pb-6"></div>
-                <div id="course-content-list" class="space-y-8 animate-fadeIn"></div>
+            <!-- 这里只展示两个大卡片，点击进入详情 -->
+            <div class="grid md:grid-cols-2 gap-8" id="product-entry-cards">
+                <!-- 由 JS 渲染 -->
             </div>
         </div>
     </section>
 
-    <!-- 4. 实战案例 (瀑布流 + 详情) -->
+    <!-- 4. 实战案例 (预览 + 入口) -->
     <section id="cases" class="py-20 bg-slate-900/50">
-        <div class="max-w-5xl mx-auto px-4">
-            <div class="text-center"><h2 class="section-title">标杆实战案例库</h2></div>
-            <div id="cases-list" class="grid md:grid-cols-2 gap-8"></div>
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <h2 class="text-3xl font-bold text-white mb-2">标杆实战案例</h2>
+                    <p class="text-slate-400 text-sm">真实落地数据，拒绝空谈</p>
+                </div>
+                <button onclick="openListLayer('cases')" class="text-blue-400 hover:text-white transition font-bold text-sm flex items-center gap-1 group">
+                    查看全部案例 <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i>
+                </button>
+            </div>
+            <!-- 仅展示前2个案例 -->
+            <div id="cases-preview" class="grid md:grid-cols-2 gap-8"></div>
         </div>
     </section>
 
     <!-- 5. 适合人群 & 权益 -->
-    <section class="py-20 bg-opacity-50 bg-slate-900/50 border-y border-white/5">
+    <section class="py-20 border-y border-white/5">
         <div class="max-w-6xl mx-auto px-6">
             <div class="grid md:grid-cols-2 gap-16 items-start">
                 <div>
-                    <h3 class="text-2xl font-bold mb-8 text-white flex items-center gap-3"><i class="fas fa-users text-blue-400"></i> 适合人群</h3>
+                    <h3 class="text-2xl font-bold mb-8 text-white"><i class="fas fa-users text-blue-400 mr-2"></i> 适合人群</h3>
                     <div id="targets-list" class="grid grid-cols-1 gap-3"></div>
                 </div>
                 <div>
-                    <h3 class="text-2xl font-bold mb-8 text-white flex items-center gap-3"><i class="fas fa-gift text-yellow-500"></i> 课程权益</h3>
+                    <h3 class="text-2xl font-bold mb-8 text-white"><i class="fas fa-gift text-yellow-500 mr-2"></i> 课程权益</h3>
                     <ul id="benefits-list" class="space-y-4 text-slate-300 text-sm"></ul>
                 </div>
             </div>
@@ -272,7 +277,7 @@
                     <div id="event-info-right"></div>
                 </div>
                 <div class="bg-white/5 p-6 rounded-2xl border border-white/10 mb-8 text-left">
-                    <h4 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><i class="fas fa-shield-alt text-green-400"></i> 硬核承诺</h4>
+                    <h4 class="text-xl font-bold text-white mb-4"><i class="fas fa-shield-alt text-green-400 mr-2"></i> 硬核承诺</h4>
                     <ul id="promise-list" class="space-y-4 text-slate-300 text-sm"></ul>
                 </div>
                 <button onclick="toggleContact()" class="w-full md:w-auto px-12 py-4 bg-blue-600 text-white font-bold text-lg rounded-full hover:bg-blue-500 transition shadow-lg shadow-blue-500/30">立即报名锁定席位</button>
@@ -280,17 +285,26 @@
         </div>
     </section>
 
-    <!-- 7. AI 文章 -->
+    <!-- 7. AI 文章 (预览 + 入口) -->
     <section id="articles" class="py-20 bg-slate-900/30">
-        <div class="max-w-5xl mx-auto px-4">
-            <div class="text-center"><h2 class="section-title">深度干货与思考</h2></div>
-            <div id="articles-list" class="grid md:grid-cols-3 gap-6"></div>
+        <div class="max-w-5xl mx-auto px-6">
+            <div class="flex justify-between items-end mb-10">
+                <div>
+                    <h2 class="text-3xl font-bold text-white mb-2">深度干货</h2>
+                    <p class="text-slate-400 text-sm">华哥的实战思考与复盘</p>
+                </div>
+                <button onclick="openListLayer('articles')" class="text-blue-400 hover:text-white transition font-bold text-sm flex items-center gap-1 group">
+                    阅读更多干货 <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i>
+                </button>
+            </div>
+            <!-- 仅展示前3篇 -->
+            <div id="articles-preview" class="grid md:grid-cols-3 gap-6"></div>
         </div>
     </section>
 
     <!-- 8. 导师介绍 -->
     <section id="instructor" class="py-20">
-        <div class="max-w-4xl mx-auto px-4">
+        <div class="max-w-4xl mx-auto px-6">
             <div class="dark-card p-8 md:p-12 flex flex-col md:flex-row items-center gap-10">
                 <img id="inst-img" class="w-40 h-40 rounded-full object-cover shadow-2xl border-4 border-slate-700" alt="Mentor">
                 <div class="flex-1 text-center md:text-left">
@@ -298,7 +312,7 @@
                     <p class="text-blue-400 font-bold mb-6" id="inst-title"></p>
                     <div id="inst-desc" class="space-y-4 text-slate-400 leading-relaxed text-sm"></div>
                     <div class="mt-8 flex gap-4 justify-center md:justify-start">
-                         <button onclick="openDetail('instructor')" class="px-6 py-2 border border-slate-500/30 text-slate-300 rounded-full hover:bg-slate-500/10 transition text-sm">查看详细履历</button>
+                         <button onclick="openDetailLayer('instructor')" class="px-6 py-2 border border-slate-500/30 text-slate-300 rounded-full hover:bg-slate-500/10 transition text-sm">查看详细履历</button>
                          <button onclick="toggleContact()" class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-500 transition text-sm font-bold">添加微信</button>
                     </div>
                 </div>
@@ -311,12 +325,7 @@
         <div class="max-w-3xl mx-auto px-4 text-center">
             <h2 class="section-title">关于我们</h2>
             <p id="about-desc" class="text-lg text-slate-400 leading-relaxed mb-8"></p>
-            <button onclick="openDetail('about')" class="text-blue-400 hover:text-blue-300 underline underline-offset-4">查看公司详细介绍</button>
-            <div class="grid grid-cols-3 gap-4 mt-12">
-                <div class="p-6 dark-card"><div class="text-3xl mb-3">🎯</div><div class="font-bold text-white">实战</div></div>
-                <div class="p-6 dark-card"><div class="text-3xl mb-3">💡</div><div class="font-bold text-white">落地</div></div>
-                <div class="p-6 dark-card"><div class="text-3xl mb-3">🚀</div><div class="font-bold text-white">增效</div></div>
-            </div>
+            <button onclick="openDetailLayer('about')" class="text-blue-400 hover:text-blue-300 underline underline-offset-4">查看公司详细介绍</button>
         </div>
     </section>
 
@@ -324,27 +333,43 @@
         <p>© 2026 华哥架构工作室 | All Rights Reserved</p>
     </footer>
 
-    <!-- ==================== 弹窗系统 ==================== -->
-
-    <!-- 通用详情弹窗 (文章/案例/导师) -->
-    <div id="detail-modal" class="modal-overlay" onclick="closeModal(event, 'detail-modal')">
-        <div class="bg-slate-900 w-full max-w-2xl h-[85vh] md:rounded-2xl shadow-2xl relative flex flex-col border border-slate-700 overflow-hidden">
-            <div class="modal-header">
-                <h2 class="text-base font-bold text-white truncate pr-4" id="modal-title"></h2>
-                <button onclick="document.getElementById('detail-modal').classList.remove('show'); document.body.classList.remove('modal-open');" class="text-slate-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
-            </div>
-            <div id="modal-content" class="p-8 overflow-y-auto article-body bg-slate-800 flex-1 text-sm"></div>
-            <!-- 悬浮胶囊按钮 -->
-            <div class="float-btn-container">
-                <button onclick="toggleContact()" class="float-btn">
-                    <i class="fab fa-weixin"></i> 加华哥微信交流
-                </button>
-            </div>
+    <!-- ==================== 二级页面系统 (全屏层) ==================== -->
+    
+    <!-- 1. 列表页层 (展示所有案例/文章) -->
+    <div id="list-layer" class="sub-page-layer">
+        <div class="page-header">
+            <div class="font-bold text-lg text-white" id="list-layer-title">全部内容</div>
+            <button onclick="closeListLayer()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 flex items-center justify-center hover:text-white"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="page-scroll-area">
+            <div class="max-w-5xl mx-auto" id="list-layer-content"></div>
         </div>
     </div>
 
-    <!-- 二维码弹窗 (Z-Index 20000，最高) -->
-    <div id="contact-modal" class="modal-overlay" style="z-index: 20000;" onclick="closeModal(event, 'contact-modal')">
+    <!-- 2. 详情页层 (文章详情/产品详情) -->
+    <div id="detail-layer" class="sub-page-layer" style="z-index: 101;">
+        <div class="page-header">
+            <button onclick="closeDetailLayer()" class="flex items-center gap-2 text-slate-400 hover:text-white text-sm font-bold">
+                <i class="fas fa-arrow-left"></i> 返回
+            </button>
+            <div class="font-bold text-white truncate max-w-[200px]" id="detail-layer-title">详情</div>
+            <div class="w-8"></div> <!-- 占位 -->
+        </div>
+        <div class="page-scroll-area bg-slate-900">
+            <div class="max-w-4xl mx-auto">
+                <div id="detail-layer-content" class="article-body px-4"></div>
+            </div>
+        </div>
+        <!-- 悬浮 CTA -->
+        <div class="float-btn-container">
+            <button onclick="toggleContact()" class="float-btn">
+                <i class="fab fa-weixin"></i> 咨询华哥 / 立即报名
+            </button>
+        </div>
+    </div>
+
+    <!-- 3. 二维码弹窗 (最高层级) -->
+    <div id="contact-modal" class="modal-overlay" onclick="closeModal(event, 'contact-modal')">
         <div class="bg-white p-8 rounded-2xl max-w-sm w-[90%] text-center shadow-2xl relative animate-up">
             <button onclick="toggleContact()" class="absolute top-3 right-3 text-slate-400 hover:text-slate-900"><i class="fas fa-times text-xl"></i></button>
             <h3 class="text-xl font-bold text-slate-900 mb-2">扫码咨询 / 报名</h3>
@@ -360,53 +385,50 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const d = CONFIG;
+            // 基础信息填充
             document.getElementById('nav-logo').innerText = d.siteInfo.logoText;
             document.getElementById('nav-btn-text').innerText = d.siteInfo.contactBtnText;
             document.getElementById('course-title').innerText = d.siteInfo.title;
             document.getElementById('modal-qr').src = d.siteInfo.qrCode;
             document.getElementById('modal-wechat').innerText = d.siteInfo.wechatId;
 
-            // 1. 初始化产品 Tabs
-            const tabsContainer = document.getElementById('product-tabs');
-            d.products.forEach((prod, index) => {
-                const btn = document.createElement('button');
-                btn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
-                btn.innerText = prod.name;
-                btn.onclick = () => switchProduct(index);
-                tabsContainer.appendChild(btn);
-            });
-            switchProduct(0); // 默认显示第一个产品
-
-            // 2. 渲染案例
-            const casesDiv = document.getElementById('cases-list');
-            d.cases.forEach((c, index) => {
-                casesDiv.innerHTML += `
-                    <div onclick="openDetail('case', ${index})" class="dark-card overflow-hidden group cursor-pointer hover:border-blue-500/30">
+            // 1. 渲染产品卡片 (入口)
+            const prodDiv = document.getElementById('product-entry-cards');
+            d.products.forEach((p, idx) => {
+                prodDiv.innerHTML += `
+                    <div class="dark-card group cursor-pointer relative h-[360px] flex flex-col" onclick="openProductDetail(${idx})">
                         <div class="h-48 overflow-hidden relative">
-                            <img src="${c.image}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105 img-placeholder" alt="Case">
-                            <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-900 to-transparent p-4 pt-10"><span class="bg-blue-600 text-white text-[10px] px-2 py-1 rounded font-bold uppercase">${c.tag}</span></div>
+                            <div class="absolute top-3 right-3 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded shadow">${p.tag}</div>
+                            <img src="${p.cover}" class="w-full h-full object-cover transition duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100" alt="${p.name}">
                         </div>
-                        <div class="p-6">
-                            <h3 class="text-xl font-bold text-white mb-2">${c.title}</h3>
-                            <p class="text-green-400 font-bold text-sm mb-3"><i class="fas fa-chart-line mr-1"></i> ${c.result}</p>
-                            <p class="text-slate-400 text-sm leading-relaxed line-clamp-2">${c.desc}</p>
+                        <div class="p-8 flex-1 flex flex-col relative z-10 bg-slate-800/90">
+                            <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-blue-400 transition">${p.name}</h3>
+                            <p class="text-slate-400 text-sm leading-relaxed mb-4 flex-1">${p.desc}</p>
+                            <div class="text-blue-400 text-sm font-bold flex items-center gap-2">查看课程大纲 <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i></div>
                         </div>
                     </div>`;
             });
 
-            // 3. 渲染文章
-            const artList = document.getElementById('articles-list');
-            d.articles.forEach((a, index) => {
-                artList.innerHTML += `<div onclick="openDetail('article', ${index})" class="dark-card p-6 cursor-pointer group h-full flex flex-col"><div class="mb-4"><span class="text-xs text-blue-400 font-mono bg-blue-900/30 px-2 py-1 rounded">${a.date}</span></div><h3 class="text-lg font-bold text-white group-hover:text-blue-400 transition mb-3">${a.title}</h3><p class="text-sm text-slate-400 line-clamp-3 flex-1 mb-4">${a.summary}</p><div class="pt-4 border-t border-slate-700 text-xs font-bold text-slate-500 flex justify-between items-center"><span>阅读全文</span> <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i></div></div>`;
+            // 2. 渲染案例预览 (只取前2个)
+            const casesDiv = document.getElementById('cases-preview');
+            d.cases.slice(0, 2).forEach((c) => {
+                casesDiv.innerHTML += createCaseCardHTML(c);
             });
 
+            // 3. 渲染文章预览 (只取前3个)
+            const artDiv = document.getElementById('articles-preview');
+            d.articles.slice(0, 3).forEach((a) => {
+                artDiv.innerHTML += createArticleCardHTML(a);
+            });
+
+            // 其他静态内容填充
             document.getElementById('targets-list').innerHTML = d.targets.map(t => `<div class="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/5 text-slate-300 text-sm"><span class="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>${t}</div>`).join('');
             document.getElementById('benefits-list').innerHTML = d.benefits.map(t => `<li class="flex gap-3 text-slate-300 leading-relaxed"><i class="fas fa-star text-yellow-500 mt-1 flex-shrink-0"></i> <span>${t}</span></li>`).join('');
             document.getElementById('promise-list').innerHTML = d.promise.map(t => `<li class="flex gap-3 items-start"><i class="fas fa-shield-alt text-green-400 mt-1 flex-shrink-0"></i> <span>${t}</span></li>`).join('');
-
+            
             const info = d.eventInfo;
-            document.getElementById('event-info-left').innerHTML = `<div class="mb-4"><div class="text-xs text-slate-400 mb-1">开课时间</div><div class="text-white font-bold">${info.time}</div></div><div><div class="text-xs text-slate-400 mb-1">开课地点</div><div class="text-white font-bold">${info.location}</div></div>`;
-            document.getElementById('event-info-right').innerHTML = `<div class="mb-4"><div class="text-xs text-slate-400 mb-1">学习费用</div><div class="text-2xl text-blue-400 font-bold">${info.price}</div></div><div><div class="text-xs text-slate-400 mb-1">优惠政策</div><div class="text-amber-400 font-bold border border-amber-500/30 bg-amber-500/10 px-2 py-1 rounded inline-block text-xs">${info.offer}</div></div>`;
+            document.getElementById('event-info-left').innerHTML = `<div class="mb-4"><div class="text-xs text-slate-400 mb-1">时间</div><div class="text-white font-bold">${info.time}</div></div><div><div class="text-xs text-slate-400 mb-1">地点</div><div class="text-white font-bold">${info.location}</div></div>`;
+            document.getElementById('event-info-right').innerHTML = `<div class="mb-4"><div class="text-xs text-slate-400 mb-1">费用</div><div class="text-2xl text-blue-400 font-bold">${info.price}</div></div><div><div class="text-xs text-slate-400 mb-1">优惠</div><div class="text-amber-400 font-bold border border-amber-500/30 bg-amber-500/10 px-2 py-1 rounded inline-block text-xs">${info.offer}</div></div>`;
 
             document.getElementById('inst-name').innerText = d.instructor.name;
             document.getElementById('inst-title').innerText = d.instructor.title;
@@ -415,74 +437,135 @@
             document.getElementById('about-desc').innerHTML = d.about.desc;
         });
 
-        // 切换产品逻辑
-        function switchProduct(index) {
-            const prod = CONFIG.products[index];
-            document.getElementById('product-desc').innerText = prod.desc;
-            
-            // 更新 Tab 样式
-            const tabs = document.getElementById('product-tabs').children;
-            for(let i=0; i<tabs.length; i++) {
-                tabs[i].className = `tab-btn ${i === index ? 'active' : ''}`;
-            }
-
-            // 渲染模块
-            const container = document.getElementById('course-content-list');
-            container.innerHTML = "";
-            prod.modules.forEach(mod => {
-                const itemsHtml = mod.items.map(t => `<li class="flex items-start gap-2 mb-2 text-slate-300 text-sm leading-snug"><i class="fas fa-angle-right ${mod.color.replace('bg-','text-')} mt-1 flex-shrink-0 text-xs"></i> <span>${t}</span></li>`).join('');
-                container.innerHTML += `
-                    <div class="mb-10 last:mb-0 animate-fadeIn">
-                        <div class="flex items-center gap-3 mb-4 border-b border-white/10 pb-2">
-                            <span class="w-1.5 h-6 ${mod.color.replace('text-','bg-')} rounded-full"></span>
-                            <h3 class="text-xl font-bold text-white tracking-wide">${mod.title}</h3>
-                        </div>
-                        <ul class="grid md:grid-cols-2 gap-x-8 gap-y-1">${itemsHtml}</ul>
-                    </div>
-                `;
-            });
+        /* --- 核心逻辑：卡片 HTML 生成器 --- */
+        function createCaseCardHTML(c) {
+            return `
+            <div onclick="openDetailLayer('case', ${c.id})" class="dark-card group cursor-pointer hover:border-blue-500/30">
+                <div class="h-48 overflow-hidden relative">
+                    <img src="${c.image}" class="w-full h-full object-cover transition duration-500 group-hover:scale-105" alt="Case">
+                    <div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-slate-900 to-transparent p-4 pt-10"><span class="bg-blue-600 text-white text-[10px] px-2 py-1 rounded font-bold uppercase">${c.tag}</span></div>
+                </div>
+                <div class="p-6">
+                    <h3 class="text-lg font-bold text-white mb-2 truncate group-hover:text-blue-400 transition">${c.title}</h3>
+                    <p class="text-green-400 font-bold text-sm mb-2"><i class="fas fa-chart-line mr-1"></i> ${c.result}</p>
+                </div>
+            </div>`;
         }
 
+        function createArticleCardHTML(a) {
+            return `
+            <div onclick="openDetailLayer('article', ${a.id})" class="dark-card p-6 cursor-pointer group flex flex-col h-full hover:border-blue-500/30">
+                <div class="mb-3 flex justify-between items-center">
+                    <span class="text-[10px] text-blue-400 font-mono bg-blue-900/30 px-2 py-0.5 rounded">${a.date}</span>
+                </div>
+                <h3 class="text-base font-bold text-white group-hover:text-blue-400 transition mb-3 line-clamp-2">${a.title}</h3>
+                <p class="text-sm text-slate-400 line-clamp-2 mb-4 flex-1">${a.summary}</p>
+                <div class="pt-3 border-t border-slate-700 text-xs font-bold text-slate-500 flex justify-between items-center">
+                    <span>阅读全文</span> <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i>
+                </div>
+            </div>`;
+        }
+
+        /* --- 交互逻辑：打开二级列表页 --- */
+        function openListLayer(type) {
+            const layer = document.getElementById('list-layer');
+            const title = document.getElementById('list-layer-title');
+            const content = document.getElementById('list-layer-content');
+            
+            content.innerHTML = ""; // 清空
+            layer.classList.add('active');
+            document.body.style.overflow = 'hidden'; // 禁止背景滚动
+
+            if (type === 'cases') {
+                title.innerText = "全部实战案例库";
+                content.className = "max-w-6xl mx-auto grid md:grid-cols-3 gap-6";
+                // 渲染所有案例
+                CONFIG.cases.forEach(c => { content.innerHTML += createCaseCardHTML(c); });
+            } else if (type === 'articles') {
+                title.innerText = "全部深度干货";
+                content.className = "max-w-5xl mx-auto grid md:grid-cols-2 gap-6"; // 文章列表改两列更易读
+                CONFIG.articles.forEach(a => { content.innerHTML += createArticleCardHTML(a); });
+            }
+        }
+
+        function closeListLayer() {
+            document.getElementById('list-layer').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        /* --- 交互逻辑：打开详情页 (产品/文章/案例/导师) --- */
+        function openDetailLayer(type, id) {
+            const layer = document.getElementById('detail-layer');
+            const title = document.getElementById('detail-layer-title');
+            const content = document.getElementById('detail-layer-content');
+            
+            let data = {};
+            if (type === 'case') data = CONFIG.cases.find(c => c.id === id);
+            else if (type === 'article') data = CONFIG.articles.find(a => a.id === id);
+            else if (type === 'instructor') data = { title: "导师介绍", content: CONFIG.instructor.detail };
+            else if (type === 'about') data = { title: "关于我们", content: CONFIG.about.detail };
+
+            if(data) {
+                title.innerText = data.title || data.name; // 适配不同字段
+                let html = "";
+                // 如果有头图
+                if(data.image) html += `<img src="${data.image}" class="w-full rounded-xl mb-6">`;
+                // 内容
+                html += `<div>${data.content}</div>`;
+                content.innerHTML = html;
+            }
+
+            layer.classList.add('active');
+            // 注意：如果是在列表页打开详情，列表页不关闭，详情页覆盖在上面
+        }
+
+        // 特殊：打开产品详情 (需要拼接 Modules HTML)
+        function openProductDetail(index) {
+            const prod = CONFIG.products[index];
+            const layer = document.getElementById('detail-layer');
+            const title = document.getElementById('detail-layer-title');
+            const content = document.getElementById('detail-layer-content');
+
+            title.innerText = prod.name;
+            
+            let html = `<div class="mb-8"><img src="${prod.cover}" class="w-full rounded-xl border border-white/10 mb-6"><p class="text-lg text-slate-300 font-bold p-4 bg-slate-800 rounded-lg">${prod.desc}</p></div>`;
+            
+            html += `<div class="space-y-8">`;
+            prod.modules.forEach(mod => {
+                const itemsHtml = mod.items.map(it => `<li class="text-slate-300 mb-2 pl-4 border-l border-slate-600 text-sm">${it}</li>`).join('');
+                html += `
+                    <div class="bg-slate-800/50 p-6 rounded-2xl border border-white/5">
+                        <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><span class="w-2 h-6 bg-blue-500 rounded-full"></span>${mod.title}</h3>
+                        <ul class="grid md:grid-cols-2 gap-2">${itemsHtml}</ul>
+                    </div>`;
+            });
+            html += `</div>`;
+
+            content.innerHTML = html;
+            layer.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeDetailLayer() {
+            document.getElementById('detail-layer').classList.remove('active');
+            // 如果列表页没打开，才恢复滚动
+            if(!document.getElementById('list-layer').classList.contains('active')) {
+                document.body.style.overflow = '';
+            }
+        }
+
+        /* --- 辅助功能 --- */
         function toggleMobileMenu() { 
             document.getElementById('mobile-menu-panel').classList.toggle('open');
             document.getElementById('mobile-menu-overlay').classList.toggle('open');
         }
         function toggleContact() {
             const m = document.getElementById('contact-modal');
-            if (m.style.display === 'flex') { m.style.display = 'none'; document.body.classList.remove('modal-open'); } 
-            else { m.style.display = 'flex'; document.body.classList.add('modal-open'); }
+            if (m.style.display === 'flex') m.style.display = 'none';
+            else m.style.display = 'flex';
         }
-        
-        // 统一详情弹窗
-        function openDetail(type, index) {
-            let title = "", content = "";
-            if (type === 'article') {
-                title = CONFIG.articles[index].title;
-                content = CONFIG.articles[index].content;
-            } else if (type === 'case') {
-                title = CONFIG.cases[index].title;
-                content = CONFIG.cases[index].content;
-            } else if (type === 'instructor') {
-                title = CONFIG.instructor.name;
-                content = CONFIG.instructor.detail;
-            } else if (type === 'about') {
-                title = "关于我们";
-                content = CONFIG.about.detail;
-            }
-            
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-content').innerHTML = content;
-            const m = document.getElementById('detail-modal');
-            m.classList.add('show');
-            document.body.classList.add('modal-open');
-        }
-        
         function closeModal(e, id) { 
-            if (e.target.id === id) { 
-                document.getElementById(id).classList.remove('show');
-                document.body.classList.remove('modal-open');
-                if(id==='contact-modal') document.getElementById(id).style.display='none';
-            }
+            if (e.target.id === id) document.getElementById(id).style.display='none';
         }
         function copyWechat() { 
             navigator.clipboard.writeText(CONFIG.siteInfo.wechatId).then(() => { 
