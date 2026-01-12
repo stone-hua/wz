@@ -23,7 +23,7 @@
             display: flex; flex-direction: column; justify-content: center;
         }
         #mobile-menu-panel.open { transform: translateX(0); }
-        .menu-link { font-size: 1.1rem; font-weight: 600; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f8fafc; }
+        .menu-link { font-size: 1.1rem; font-weight: 600; padding: 1rem 0; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; color: #f8fafc; cursor: pointer; }
 
         /* Hero 图片适配 */
         .hero-section { position: relative; background-image: url('./images/banner.jpg'); background-repeat: no-repeat; display: flex; align-items: center; justify-content: center; }
@@ -64,7 +64,12 @@
         }
 
         /* 详情页排版 */
-        .article-body { font-size: 1rem; color: #cbd5e1; white-space: pre-wrap; max-width: 800px; mx-auto; padding-bottom: 100px; }
+        .article-body { font-size: 1rem; color: #cbd5e1; white-space: pre-wrap; max-width: 800px; margin: 0 auto; padding-bottom: 100px; }
+        /* 针对产品介绍的纯净排版 */
+        .product-intro-text { font-size: 1.05rem; line-height: 1.8; color: #e2e8f0; margin-bottom: 2rem; }
+        .product-intro-text p { margin-bottom: 1.2em; }
+        .product-intro-text h3 { color: #fff; font-size: 1.4rem; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem; }
+        
         .article-body h3 { font-size: 1.4em; font-weight: bold; margin-top: 2em; margin-bottom: 1em; color: #fff; border-left: 4px solid #3b82f6; padding-left: 12px; }
         .article-body p { margin-bottom: 1.5em; line-height: 1.8; text-align: justify; }
         .article-body img { width: 100%; border-radius: 0.75rem; margin: 1.5rem 0; border: 1px solid rgba(255,255,255,0.1); }
@@ -94,6 +99,9 @@
 
     <script>
         const CONFIG = {
+            // ★★★ 1. 数据控制开关：设置为 false 可以隐藏多余的模拟数据，只显示真实数据 ★★★
+            enableMockData: false, 
+
             siteInfo: {
                 title: "AI 智能体实战应用线下课",
                 logoText: "华哥架构",
@@ -111,14 +119,23 @@
                 detail: `<h3>实战经验</h3><p>拥有 7 年以上互联网创业经验，曾主导多个百万级项目的 AI 落地...</p>`
             },
 
-            // 产品数据 (首页展示卡片，点击进详情)
+            // 产品数据 
             products: [
                 {
                     id: "p1",
                     name: "线下实战课",
                     tag: "热门",
-                    cover: "./images/prod_offline.jpg", // 建议配图
-                    desc: "两天一夜硬核交付，从“思维认知”到“暗黑落地”全流程解析。",
+                    cover: "./images/prod_offline.jpg", 
+                    // ★★★ 2. 这里是产品详情的完整介绍，支持HTML，会纯净显示 ★★★
+                    desc: `
+                        <p><b>为什么做这门课？</b></p>
+                        <p>市面上讲 AI 的很多，但真正讲“商业落地”和“变现”的很少。我们不教你写代码，只教你如何用 AI 解决老板最头疼的管理、销售、效率问题。</p>
+                        <p>这是一次从思维认知到工具实操的全面降维打击。我们将用两天一夜的时间，带你打通 AI 时代的商业任督二脉。</p>
+                        <p><b>课程交付目标：</b></p>
+                        <p>1. 让每位学员拥有一套属于自己的 AI 销售军团。</p>
+                        <p>2. 掌握企业级知识库的搭建心法。</p>
+                        <p>3. 链接高端人脉圈层，共享资源。</p>
+                    `,
                     modules: [
                         { title: "第一模块：认知重构", items: ["财富分水岭", "社会草台班子论", "如何让AI理解需求", "重大决策为何必须AI参与"] },
                         { title: "第二模块：炼金秘诀", items: ["信任与许愿", "避开认知巨坑", "落地基本功", "数据分层技术", "OKR调教法"] },
@@ -132,7 +149,7 @@
                     name: "企业代运营",
                     tag: "定制",
                     cover: "./images/prod_ent.jpg",
-                    desc: "全流程自动化闭环设计，为企业量身打造私有化 AI 军团。",
+                    desc: "<p>针对中大型企业提供的全案服务。我们深入企业内部，梳理 SOP，定制开发 AI 智能体，实现降本增效。</p><p>服务包含：业务诊断、流程重构、智能体开发、员工培训、陪跑落地。</p>",
                     modules: [
                         { title: "阶段一：业务拆解", items: ["深度梳理企业SOP", "提取核心业务逻辑", "痛点诊断与流程重构"] },
                         { title: "阶段二：智能体搭建", items: ["定制开发 Dify 工作流", "自动获客/清洗/分发", "知识库私有化部署"] },
@@ -141,7 +158,7 @@
                 }
             ],
 
-            // 案例与文章 (这里放前几个，后面代码会自动生成更多模拟数据)
+            // 案例与文章 (真实数据)
             cases: [
                 { id: 1, title: "医美 AI 销冠系统", image: "./images/case1.jpg", tag: "200人医美公司", result: "业绩增长 30%", content: `<h3>背景</h3><p>医美行业销售流动性大...</p>` },
                 { id: 2, title: "心理 AI 督导系统", image: "./images/case2.jpg", tag: "心理行业", result: "成本立降 90%", content: `<h3>痛点</h3><p>督导资源稀缺...</p>` }
@@ -151,43 +168,56 @@
             ],
 
             // 其他信息
-            about: { desc: "我们是一家专注于 <b>AI 商业落地</b> 的实战机构。", detail: `<p>张兆华工作室成立于 2023 年...</p>` },
+            about: { 
+                desc: "我们是一家专注于 <b>AI 商业落地</b> 的实战机构。", 
+                detail: `
+                    <h3>我们的使命</h3>
+                    <p>张兆华工作室成立于 2023 年，致力于帮助中小企业在 AI 浪潮中找到切实的落地方案。</p>
+                    <p>我们不讲虚构的概念，只看真实的数据结果。目前已累计服务超过 50 家企业，覆盖医美、教育、心理、电商等多个行业。</p>
+                    <img src="./images/team.jpg">
+                    <h3>核心团队</h3>
+                    <p>团队成员均来自一线互联网大厂及实业操盘手，拥有深厚的技术背景与敏锐的商业嗅觉。</p>
+                ` 
+            },
             targets: ["渴望被AI赋能的超级个体", "被团队管理内耗折磨的老板", "寻求新赛道的职场中高层", "想了解 AI 风口的投资者"],
             eventInfo: { time: "2026年01月31日-02月01日 (两天一夜)", location: "河南省郑州市", price: "9980元", offer: "两人同行，各免500" },
             benefits: ["技术突破：一站式解决账号问题", "实操指导：现场修正搭建问题", "自由构建：获高规提示词模板", "变现达人：优化商业路径"],
             promise: ["1. 全网独家 AI 实战玩法", "2. 首日无收获，全额退款"]
         };
 
-        // ★★★ 自动生成模拟数据 (为了展示列表页效果) ★★★
-        // 生成 8 个额外案例
-        for(let i=3; i<=10; i++) {
-            CONFIG.cases.push({
-                id: i, title: `某行业 AI 落地案例展示 ${i}`, image: `./images/case${i%3 + 1}.jpg`, 
-                tag: "实战案例", result: "效率提升 500%", 
-                content: `<h3>案例背景 ${i}</h3><p>这是一个关于行业 ${i} 的深度落地案例...</p><p>此处展示详细的构建过程和数据对比。</p>`
-            });
-        }
-        // 生成 10 个额外文章
-        for(let i=2; i<=12; i++) {
-            CONFIG.articles.push({
-                id: i, title: `深度思考：AI 时代的商业逻辑重构 No.${i}`, date: `2026-01-${10+i}`, 
-                summary: `这是第 ${i} 篇关于 AI 落地实操的深度干货分享，建议收藏。`, 
-                content: `<h3>深度解析 ${i}</h3><p>在 AI 时代，我们必须重新审视...</p>`
-            });
+        // ★★★ 逻辑更新：根据 enableMockData 开关决定是否填充假数据 ★★★
+        if (CONFIG.enableMockData) {
+            for(let i=3; i<=10; i++) {
+                CONFIG.cases.push({
+                    id: i, title: `某行业 AI 落地案例展示 ${i}`, image: `./images/case${i%3 + 1}.jpg`, 
+                    tag: "实战案例", result: "效率提升 500%", 
+                    content: `<h3>案例背景 ${i}</h3><p>这是一个关于行业 ${i} 的深度落地案例...</p>`
+                });
+            }
+            for(let i=2; i<=12; i++) {
+                CONFIG.articles.push({
+                    id: i, title: `深度思考：AI 时代的商业逻辑重构 No.${i}`, date: `2026-01-${10+i}`, 
+                    summary: `这是第 ${i} 篇关于 AI 落地实操的深度干货分享，建议收藏。`, 
+                    content: `<h3>深度解析 ${i}</h3><p>在 AI 时代，我们必须重新审视...</p>`
+                });
+            }
         }
     </script>
 
-    <!-- 1. 导航栏 -->
+    <!-- 1. 导航栏 (交互大改：直接打开二级界面) -->
     <nav class="glass-nav fixed top-0 w-full z-40">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2 font-bold text-xl text-white cursor-pointer" onclick="window.scrollTo(0,0)">
                 <i class="fas fa-cube text-blue-500"></i> <span id="nav-logo"></span>
             </div>
+            <!-- 电脑端菜单 -->
             <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-300">
                 <a href="#products" class="hover:text-blue-500 transition">产品体系</a>
-                <a href="#cases" class="hover:text-blue-500 transition">实战案例</a>
-                <a href="#articles" class="hover:text-blue-500 transition">深度干货</a>
+                <!-- 修改：不再href滚动，而是onclick直接打开Layer -->
+                <a href="javascript:void(0)" onclick="openListLayer('cases')" class="hover:text-blue-500 transition">实战案例</a>
+                <a href="javascript:void(0)" onclick="openListLayer('articles')" class="hover:text-blue-500 transition">深度干货</a>
                 <a href="#instructor" class="hover:text-blue-500 transition">讲师介绍</a>
+                <a href="javascript:void(0)" onclick="openDetailLayer('about')" class="hover:text-blue-500 transition">关于我们</a>
             </div>
             <div class="flex items-center gap-4">
                 <button onclick="toggleContact()" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-full text-xs font-bold transition flex items-center gap-2 shadow-lg shadow-blue-500/20">
@@ -196,13 +226,18 @@
                 <button class="md:hidden text-white text-xl px-2" onclick="toggleMobileMenu()"><i class="fas fa-bars"></i></button>
             </div>
         </div>
+        
         <div id="mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+        <!-- 移动端侧边栏 -->
         <div id="mobile-menu-panel">
             <div class="absolute top-6 right-6"><button onclick="toggleMobileMenu()" class="text-white text-2xl"><i class="fas fa-times"></i></button></div>
             <a href="#products" class="menu-link" onclick="toggleMobileMenu()">产品体系</a>
-            <a href="#cases" class="menu-link" onclick="toggleMobileMenu()">实战案例</a>
-            <a href="#articles" class="menu-link" onclick="toggleMobileMenu()">深度干货</a>
+            <!-- 修改：手机端点击直接进入二级界面 -->
+            <div class="menu-link" onclick="openListLayer('cases'); toggleMobileMenu()">实战案例</div>
+            <div class="menu-link" onclick="openListLayer('articles'); toggleMobileMenu()">深度干货</div>
             <a href="#instructor" class="menu-link" onclick="toggleMobileMenu()">讲师介绍</a>
+            <!-- 新增：关于我们 -->
+            <div class="menu-link" onclick="openDetailLayer('about'); toggleMobileMenu()">关于我们</div>
         </div>
     </nav>
 
@@ -320,11 +355,12 @@
         </div>
     </section>
 
-    <!-- 9. 关于我们 -->
+    <!-- 9. 关于我们 (入口) -->
     <section id="about" class="py-20 bg-slate-900/30">
         <div class="max-w-3xl mx-auto px-4 text-center">
             <h2 class="section-title">关于我们</h2>
             <p id="about-desc" class="text-lg text-slate-400 leading-relaxed mb-8"></p>
+            <!-- 交互更新 -->
             <button onclick="openDetailLayer('about')" class="text-blue-400 hover:text-blue-300 underline underline-offset-4">查看公司详细介绍</button>
         </div>
     </section>
@@ -403,17 +439,21 @@
                         </div>
                         <div class="p-8 flex-1 flex flex-col relative z-10 bg-slate-800/90">
                             <h3 class="text-2xl font-bold text-white mb-2 group-hover:text-blue-400 transition">${p.name}</h3>
-                            <p class="text-slate-400 text-sm leading-relaxed mb-4 flex-1">${p.desc}</p>
+                            <div class="text-slate-400 text-sm leading-relaxed mb-4 flex-1 line-clamp-3 overflow-hidden">${p.desc.replace(/<[^>]+>/g, '')}</div>
                             <div class="text-blue-400 text-sm font-bold flex items-center gap-2">查看课程大纲 <i class="fas fa-arrow-right group-hover:translate-x-1 transition"></i></div>
                         </div>
                     </div>`;
             });
 
-            // 2. 渲染案例预览 (只取前2个)
+            // 2. 渲染案例预览 (只取前2个，如果没开启Mock且数据不足则显示全部)
             const casesDiv = document.getElementById('cases-preview');
             d.cases.slice(0, 2).forEach((c) => {
                 casesDiv.innerHTML += createCaseCardHTML(c);
             });
+            // 隐藏"查看全部"按钮如果数据太少
+            if (d.cases.length <= 2) {
+                // 可选：如果案例很少，可以隐藏首页的“查看更多”按钮，这里暂保留
+            }
 
             // 3. 渲染文章预览 (只取前3个)
             const artDiv = document.getElementById('articles-preview');
@@ -481,10 +521,12 @@
                 content.className = "max-w-6xl mx-auto grid md:grid-cols-3 gap-6";
                 // 渲染所有案例
                 CONFIG.cases.forEach(c => { content.innerHTML += createCaseCardHTML(c); });
+                if(CONFIG.cases.length === 0) content.innerHTML = `<div class="text-center text-slate-500 col-span-3 py-20">暂无更多案例</div>`;
             } else if (type === 'articles') {
                 title.innerText = "全部深度干货";
-                content.className = "max-w-5xl mx-auto grid md:grid-cols-2 gap-6"; // 文章列表改两列更易读
+                content.className = "max-w-5xl mx-auto grid md:grid-cols-2 gap-6"; 
                 CONFIG.articles.forEach(a => { content.innerHTML += createArticleCardHTML(a); });
+                if(CONFIG.articles.length === 0) content.innerHTML = `<div class="text-center text-slate-500 col-span-2 py-20">暂无更多文章</div>`;
             }
         }
 
@@ -519,7 +561,7 @@
             // 注意：如果是在列表页打开详情，列表页不关闭，详情页覆盖在上面
         }
 
-        // 特殊：打开产品详情 (需要拼接 Modules HTML)
+        // ★★★ 修改：产品详情页排版更新（纯净版） ★★★
         function openProductDetail(index) {
             const prod = CONFIG.products[index];
             const layer = document.getElementById('detail-layer');
@@ -528,13 +570,18 @@
 
             title.innerText = prod.name;
             
-            let html = `<div class="mb-8"><img src="${prod.cover}" class="w-full rounded-xl border border-white/10 mb-6"><p class="text-lg text-slate-300 font-bold p-4 bg-slate-800 rounded-lg">${prod.desc}</p></div>`;
+            // 1. 头图
+            let html = `<div class="mb-6"><img src="${prod.cover}" class="w-full rounded-xl border border-white/10"></div>`;
             
-            html += `<div class="space-y-8">`;
+            // 2. 纯净的产品介绍（支持HTML）
+            html += `<div class="product-intro-text">${prod.desc}</div>`;
+            
+            // 3. 课程模块列表
+            html += `<div class="space-y-8 mt-10">`;
             prod.modules.forEach(mod => {
                 const itemsHtml = mod.items.map(it => `<li class="text-slate-300 mb-2 pl-4 border-l border-slate-600 text-sm">${it}</li>`).join('');
                 html += `
-                    <div class="bg-slate-800/50 p-6 rounded-2xl border border-white/5">
+                    <div class="bg-slate-800/30 p-6 rounded-xl border border-white/5">
                         <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><span class="w-2 h-6 bg-blue-500 rounded-full"></span>${mod.title}</h3>
                         <ul class="grid md:grid-cols-2 gap-2">${itemsHtml}</ul>
                     </div>`;
