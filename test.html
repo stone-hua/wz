@@ -56,7 +56,7 @@
         .sub-page-layer.active { transform: translateX(0); }
         
         /* 列表容器 */
-        .page-scroll-area { flex: 1; overflow-y: auto; padding: 2rem 1rem; scroll-behavior: smooth; }
+        .page-scroll-area { flex: 1; overflow-y: auto; padding: 2rem 1rem; scroll-behavior: smooth; -webkit-overflow-scrolling: touch; }
         .page-header {
             padding: 1rem; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between;
@@ -65,11 +65,23 @@
 
         /* 详情页排版 */
         .article-body { font-size: 1rem; color: #cbd5e1; white-space: pre-wrap; max-width: 800px; margin: 0 auto; padding-bottom: 100px; }
-        /* 针对产品介绍的纯净排版 */
-        .product-intro-text { font-size: 1.05rem; line-height: 1.8; color: #e2e8f0; margin-bottom: 2rem; }
-        .product-intro-text p { margin-bottom: 1.2em; }
-        .product-intro-text h3 { color: #fff; font-size: 1.4rem; font-weight: bold; margin-top: 2rem; margin-bottom: 1rem; }
         
+        /* 针对产品介绍的纯净排版 (仿截图风格) */
+        .product-module-container { margin-bottom: 3rem; }
+        .product-module-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.5rem; }
+        .product-module-bar { width: 4px; height: 24px; border-radius: 2px; }
+        .product-module-title { font-size: 1.25rem; font-weight: 800; color: #fff; letter-spacing: 0.5px; }
+        .product-item-list { list-style: none; padding: 0; }
+        .product-item { 
+            position: relative; padding-left: 1.5rem; margin-bottom: 1.25rem; 
+            font-size: 0.95rem; line-height: 1.6; color: #94a3b8; 
+        }
+        .product-item::before { 
+            content: '>'; position: absolute; left: 0; top: 0; 
+            color: #3b82f6; font-weight: bold; font-family: monospace; 
+        }
+        .product-item b { color: #e2e8f0; font-weight: 700; display: inline-block; margin-right: 4px; }
+
         .article-body h3 { font-size: 1.4em; font-weight: bold; margin-top: 2em; margin-bottom: 1em; color: #fff; border-left: 4px solid #3b82f6; padding-left: 12px; }
         .article-body p { margin-bottom: 1.5em; line-height: 1.8; text-align: justify; }
         .article-body img { width: 100%; border-radius: 0.75rem; margin: 1.5rem 0; border: 1px solid rgba(255,255,255,0.1); }
@@ -89,17 +101,13 @@
         .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 20000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-overlay.show { display: flex; animation: zoomIn 0.25s ease-out; }
         @keyframes zoomIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
-        /* 产品模块列表样式 */
-        .module-item { border-left: 1px solid rgba(255,255,255,0.1); padding-left: 1.5rem; margin-bottom: 2rem; position: relative; }
-        .module-item::before { content: ''; position: absolute; left: -5px; top: 0; width: 9px; height: 9px; border-radius: 50%; background: #3b82f6; }
     </style>
 </head>
 <body class="pt-16">
 
     <script>
         const CONFIG = {
-            // ★★★ 1. 数据控制开关：设置为 false 可以隐藏多余的模拟数据，只显示真实数据 ★★★
+            // 数据控制开关
             enableMockData: false, 
 
             siteInfo: {
@@ -126,22 +134,76 @@
                     name: "线下实战课",
                     tag: "热门",
                     cover: "./images/prod_offline.jpg", 
-                    // ★★★ 2. 这里是产品详情的完整介绍，支持HTML，会纯净显示 ★★★
-                    desc: `
-                        <p><b>为什么做这门课？</b></p>
-                        <p>市面上讲 AI 的很多，但真正讲“商业落地”和“变现”的很少。我们不教你写代码，只教你如何用 AI 解决老板最头疼的管理、销售、效率问题。</p>
-                        <p>这是一次从思维认知到工具实操的全面降维打击。我们将用两天一夜的时间，带你打通 AI 时代的商业任督二脉。</p>
-                        <p><b>课程交付目标：</b></p>
-                        <p>1. 让每位学员拥有一套属于自己的 AI 销售军团。</p>
-                        <p>2. 掌握企业级知识库的搭建心法。</p>
-                        <p>3. 链接高端人脉圈层，共享资源。</p>
-                    `,
+                    desc: "从“思维认知”到“暗黑落地”，两天一夜硬核交付。",
+                    // ★★★ V24 更新：完整注入 V16 版本的五大核心模块内容 ★★★
                     modules: [
-                        { title: "第一模块：认知重构", items: ["财富分水岭", "社会草台班子论", "如何让AI理解需求", "重大决策为何必须AI参与"] },
-                        { title: "第二模块：炼金秘诀", items: ["信任与许愿", "避开认知巨坑", "落地基本功", "数据分层技术", "OKR调教法"] },
-                        { title: "第三模块：AI实战场", items: ["内容流水线", "资深面试官", "数字分身克隆", "团队销冠助手", "私人健康指导", "面相性格穿透"] },
-                        { title: "第四模块：暗黑级应用", items: ["全息督察官", "合规性核查", "帝王决策术", "流程架构师", "防政变系统"] },
-                        { title: "第五模块：财富终局", items: ["AI时代思维特征", "跨界套利蓝图", "想象力生产力", "企业无感落地", "AI 赋能百人企业"] }
+                        {
+                            title: "第一模块：认知重构——破除思维牢笼",
+                            color: "bg-blue-500", // 对应CSS中的Bar颜色
+                            items: [
+                                "<b>财富的分水岭：</b>为什么别人把 AI 当玩具，而我用它当“数字印钞机”？",
+                                "<b>社会草台班子：</b>AI对个人、企业和社会，会有什么巨大影响和价值？",
+                                "<b>如何让 AI 理解你的需求：</b>大多数人感觉AI不好用，真实原因是什么？",
+                                "<b>如何让 AI 帮你做决策：</b>重大决策和战略选择，为什么一定要 AI 参与进来？",
+                                "<b>财富增量的必然：</b>AI 如何给个体和管理者，创造新的财富增量？",
+                                "<b>偏见与傲慢：</b>阻碍多数人用 AI变现 的三大错误观点是什么？",
+                                "<b>AI 的高手视角：</b>使用 AI 巨额变现 或 降本增效，需要哪些前置条件？"
+                            ]
+                        },
+                        {
+                            title: "第二模块：炼金秘诀——调教出好用智能体的硬核逻辑",
+                            color: "bg-purple-500",
+                            items: [
+                                "<b>信任与许愿：</b>阻碍你变现的不是 AI 技术，而是“不敢要求”与“不信任”",
+                                "<b>避开认知巨坑：</b>深挖大部分人错过 AI 红利的原因，以及把握机会的正确姿势",
+                                "<b>落地 AI 的基本认知：</b>知识库、提示词、智能体的关系和区别？",
+                                "<b>数据分层技术：</b>如何通过数据分层，让 AI 成为 100% 懂你的 “数字大脑”？",
+                                "<b>提示词逻辑：</b>如何用OKR管理法，引导并调教 AI 出色完成任务？",
+                                "<b>拒绝“教人做事”：</b>只谈目标、不谈过程的帝王级 AI 管理手段"
+                            ]
+                        },
+                        {
+                            title: "第三模块：AI实战场——改变产业结构的应用场景",
+                            color: "bg-emerald-500",
+                            items: [
+                                "<b>内容流水线：</b>如何通过 AI 实现50倍效率、全自动的产出高质量爆款内容？",
+                                "<b>私域运营官：</b>如何通过AI 实现私域深度运营，持续出大单？",
+                                "<b>资深面试官：</b>如何通过 AI 精准高效的招人、选人、留人、挖人？",
+                                "<b>数字分身克隆：</b>如何复刻自己的数字分身，7*24小时服务客户或辅导团队？",
+                                "<b>团队销冠助手：</b>如何通过 AI 实现公司全员秒变销冠？",
+                                "<b>团队能力对齐：</b>AI如何快速复刻医美、咨询等行业私域员工的销售能力？",
+                                "<b>专治团队刺头：</b>如何通过 AI ，加倍提升团队的整体能力和稳定性？",
+                                "<b>私人健康指导：</b>如何通过 AI 实现“菲佣”级的贴身健康指导服务？",
+                                "<b>面相性格穿透：</b>如何利用 AI 进行步态、面相与语料分析，掌握关系中的主动权？",
+                                "<b>伴侣咨询功能：</b>如何通过 AI 疗愈alpha型创业者，内心深处的创伤和盲区？"
+                            ]
+                        },
+                        {
+                            title: "第四模块：暗黑级应用——AI 辅助领袖掌控力暴增",
+                            color: "bg-red-500",
+                            items: [
+                                "<b>全息督察官：</b>如何用 AI 监督分公司、分店的的管理死角与乱象？",
+                                "<b>合规性核查：</b>如何用 AI 保障电销、医美或金融等行业的话术合规？",
+                                "<b>帝王决策术：</b>如何通过 AI 做出科学、精准的商业/管理等重大决策？",
+                                "<b>流程架构师：</b>如何通过AI 辅助团队进入自动运作模式，大量解放老板时间？",
+                                "<b>业务线拆解：</b>如何通过AI 深度研判复杂业务逻辑，找出核心节点？",
+                                "<b>跨部门协作：</b>如何通过AI 打通公司各部门之间的协作壁垒？",
+                                "<b>稳定性“审计”：</b>如何利用AI 实现垂直管理 3000 人的“领袖透视眼”？",
+                                "<b>防政变系统：</b>如何防止核心成员反水，避免老板面临委内瑞拉“马杜罗”式的结局？"
+                            ]
+                        },
+                        {
+                            title: "第五模块：财富终局——AI时代的跨界套利蓝图",
+                            color: "bg-amber-500",
+                            items: [
+                                "<b>AI时代的思维：</b>能用 AI 实现极高变现的人，有哪些思维特征？",
+                                "<b>AI 带来的可能性：</b>有哪些领域，会因为AI 爆发巨大的财富机遇？",
+                                "<b>想象力是生产力：</b>如何通过“攻击”、“加密”与“禁忌话题”，提升你的 AI 使用力？",
+                                "<b>企业无感落地AI ：</b>无需全员费时费力学AI，3分钟即可落地企业的AI应用，长啥样？",
+                                "<b>AI 赋能百人企业：</b>年营收2亿的公司老板，愿意采用什么样的 AI 落地方案？",
+                                "<b>AI 效果的巩固：</b>如何持续让 AI 赋能个体或企业的长期增长？"
+                            ]
+                        }
                     ]
                 },
                 {
@@ -149,11 +211,11 @@
                     name: "企业代运营",
                     tag: "定制",
                     cover: "./images/prod_ent.jpg",
-                    desc: "<p>针对中大型企业提供的全案服务。我们深入企业内部，梳理 SOP，定制开发 AI 智能体，实现降本增效。</p><p>服务包含：业务诊断、流程重构、智能体开发、员工培训、陪跑落地。</p>",
+                    desc: "针对中大型企业提供的全案服务。我们深入企业内部，梳理 SOP，定制开发 AI 智能体，实现降本增效。",
                     modules: [
-                        { title: "阶段一：业务拆解", items: ["深度梳理企业SOP", "提取核心业务逻辑", "痛点诊断与流程重构"] },
-                        { title: "阶段二：智能体搭建", items: ["定制开发 Dify 工作流", "自动获客/清洗/分发", "知识库私有化部署"] },
-                        { title: "阶段三：数据闭环", items: ["打通 CRM / 企微 / 钉钉", "数据实时看板", "员工绩效自动化考核"] }
+                        { title: "阶段一：业务拆解", color: "bg-indigo-500", items: ["<b>深度梳理企业SOP</b>", "<b>提取核心业务逻辑</b>", "<b>痛点诊断与流程重构</b>"] },
+                        { title: "阶段二：智能体搭建", color: "bg-pink-500", items: ["<b>定制开发 Dify 工作流</b>", "<b>自动获客/清洗/分发</b>", "<b>知识库私有化部署</b>"] },
+                        { title: "阶段三：数据闭环", color: "bg-cyan-500", items: ["<b>打通 CRM / 企微 / 钉钉</b>", "<b>数据实时看板</b>", "<b>员工绩效自动化考核</b>"] }
                     ]
                 }
             ],
@@ -185,7 +247,6 @@
             promise: ["1. 全网独家 AI 实战玩法", "2. 首日无收获，全额退款"]
         };
 
-        // ★★★ 逻辑更新：根据 enableMockData 开关决定是否填充假数据 ★★★
         if (CONFIG.enableMockData) {
             for(let i=3; i<=10; i++) {
                 CONFIG.cases.push({
@@ -204,7 +265,7 @@
         }
     </script>
 
-    <!-- 1. 导航栏 (交互大改：直接打开二级界面) -->
+    <!-- 1. 导航栏 (交互：直接打开二级界面) -->
     <nav class="glass-nav fixed top-0 w-full z-40">
         <div class="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
             <div class="flex items-center gap-2 font-bold text-xl text-white cursor-pointer" onclick="window.scrollTo(0,0)">
@@ -213,7 +274,6 @@
             <!-- 电脑端菜单 -->
             <div class="hidden md:flex space-x-8 text-sm font-medium text-slate-300">
                 <a href="#products" class="hover:text-blue-500 transition">产品体系</a>
-                <!-- 修改：不再href滚动，而是onclick直接打开Layer -->
                 <a href="javascript:void(0)" onclick="openListLayer('cases')" class="hover:text-blue-500 transition">实战案例</a>
                 <a href="javascript:void(0)" onclick="openListLayer('articles')" class="hover:text-blue-500 transition">深度干货</a>
                 <a href="#instructor" class="hover:text-blue-500 transition">讲师介绍</a>
@@ -232,11 +292,9 @@
         <div id="mobile-menu-panel">
             <div class="absolute top-6 right-6"><button onclick="toggleMobileMenu()" class="text-white text-2xl"><i class="fas fa-times"></i></button></div>
             <a href="#products" class="menu-link" onclick="toggleMobileMenu()">产品体系</a>
-            <!-- 修改：手机端点击直接进入二级界面 -->
             <div class="menu-link" onclick="openListLayer('cases'); toggleMobileMenu()">实战案例</div>
             <div class="menu-link" onclick="openListLayer('articles'); toggleMobileMenu()">深度干货</div>
             <a href="#instructor" class="menu-link" onclick="toggleMobileMenu()">讲师介绍</a>
-            <!-- 新增：关于我们 -->
             <div class="menu-link" onclick="openDetailLayer('about'); toggleMobileMenu()">关于我们</div>
         </div>
     </nav>
@@ -360,7 +418,6 @@
         <div class="max-w-3xl mx-auto px-4 text-center">
             <h2 class="section-title">关于我们</h2>
             <p id="about-desc" class="text-lg text-slate-400 leading-relaxed mb-8"></p>
-            <!-- 交互更新 -->
             <button onclick="openDetailLayer('about')" class="text-blue-400 hover:text-blue-300 underline underline-offset-4">查看公司详细介绍</button>
         </div>
     </section>
@@ -445,17 +502,14 @@
                     </div>`;
             });
 
-            // 2. 渲染案例预览 (只取前2个，如果没开启Mock且数据不足则显示全部)
+            // 2. 渲染案例预览
             const casesDiv = document.getElementById('cases-preview');
             d.cases.slice(0, 2).forEach((c) => {
                 casesDiv.innerHTML += createCaseCardHTML(c);
             });
-            // 隐藏"查看全部"按钮如果数据太少
-            if (d.cases.length <= 2) {
-                // 可选：如果案例很少，可以隐藏首页的“查看更多”按钮，这里暂保留
-            }
+            if (d.cases.length <= 2) { /* 可选：隐藏查看更多按钮 */ }
 
-            // 3. 渲染文章预览 (只取前3个)
+            // 3. 渲染文章预览
             const artDiv = document.getElementById('articles-preview');
             d.articles.slice(0, 3).forEach((a) => {
                 artDiv.innerHTML += createArticleCardHTML(a);
@@ -514,12 +568,11 @@
             
             content.innerHTML = ""; // 清空
             layer.classList.add('active');
-            document.body.style.overflow = 'hidden'; // 禁止背景滚动
+            document.body.style.overflow = 'hidden'; // ★★★ 关键修复：锁死背景滚动 ★★★
 
             if (type === 'cases') {
                 title.innerText = "全部实战案例库";
                 content.className = "max-w-6xl mx-auto grid md:grid-cols-3 gap-6";
-                // 渲染所有案例
                 CONFIG.cases.forEach(c => { content.innerHTML += createCaseCardHTML(c); });
                 if(CONFIG.cases.length === 0) content.innerHTML = `<div class="text-center text-slate-500 col-span-3 py-20">暂无更多案例</div>`;
             } else if (type === 'articles') {
@@ -532,7 +585,7 @@
 
         function closeListLayer() {
             document.getElementById('list-layer').classList.remove('active');
-            document.body.style.overflow = '';
+            document.body.style.overflow = ''; // 恢复滚动
         }
 
         /* --- 交互逻辑：打开详情页 (产品/文章/案例/导师) --- */
@@ -541,6 +594,8 @@
             const title = document.getElementById('detail-layer-title');
             const content = document.getElementById('detail-layer-content');
             
+            document.body.style.overflow = 'hidden'; // ★★★ 关键修复：锁死背景滚动 ★★★
+
             let data = {};
             if (type === 'case') data = CONFIG.cases.find(c => c.id === id);
             else if (type === 'article') data = CONFIG.articles.find(a => a.id === id);
@@ -548,54 +603,54 @@
             else if (type === 'about') data = { title: "关于我们", content: CONFIG.about.detail };
 
             if(data) {
-                title.innerText = data.title || data.name; // 适配不同字段
+                title.innerText = data.title || data.name; 
                 let html = "";
-                // 如果有头图
                 if(data.image) html += `<img src="${data.image}" class="w-full rounded-xl mb-6">`;
-                // 内容
                 html += `<div>${data.content}</div>`;
                 content.innerHTML = html;
             }
 
             layer.classList.add('active');
-            // 注意：如果是在列表页打开详情，列表页不关闭，详情页覆盖在上面
         }
 
-        // ★★★ 修改：产品详情页排版更新（纯净版） ★★★
+        // ★★★ V24 更新：产品详情页 - 仿截图纯净排版 ★★★
         function openProductDetail(index) {
             const prod = CONFIG.products[index];
             const layer = document.getElementById('detail-layer');
             const title = document.getElementById('detail-layer-title');
             const content = document.getElementById('detail-layer-content');
 
+            document.body.style.overflow = 'hidden'; // 锁死背景滚动
+
             title.innerText = prod.name;
             
-            // 1. 头图
-            let html = `<div class="mb-6"><img src="${prod.cover}" class="w-full rounded-xl border border-white/10"></div>`;
+            // 1. 顶部大图
+            let html = `<div class="mb-8"><img src="${prod.cover}" class="w-full rounded-xl border border-white/10 shadow-2xl"></div>`;
             
-            // 2. 纯净的产品介绍（支持HTML）
-            html += `<div class="product-intro-text">${prod.desc}</div>`;
-            
-            // 3. 课程模块列表
-            html += `<div class="space-y-8 mt-10">`;
+            // 2. 纯净模块列表 (无卡片背景)
             prod.modules.forEach(mod => {
-                const itemsHtml = mod.items.map(it => `<li class="text-slate-300 mb-2 pl-4 border-l border-slate-600 text-sm">${it}</li>`).join('');
+                const itemsHtml = mod.items.map(it => `<li class="product-item">${it}</li>`).join('');
+                // 动态颜色条 (Fallback到蓝色)
+                const barColor = mod.color || "bg-blue-500"; 
+                
                 html += `
-                    <div class="bg-slate-800/30 p-6 rounded-xl border border-white/5">
-                        <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2"><span class="w-2 h-6 bg-blue-500 rounded-full"></span>${mod.title}</h3>
-                        <ul class="grid md:grid-cols-2 gap-2">${itemsHtml}</ul>
-                    </div>`;
+                    <div class="product-module-container">
+                        <div class="product-module-header">
+                            <span class="${barColor} product-module-bar"></span>
+                            <h3 class="product-module-title">${mod.title}</h3>
+                        </div>
+                        <ul class="product-item-list">${itemsHtml}</ul>
+                    </div>
+                `;
             });
-            html += `</div>`;
 
             content.innerHTML = html;
             layer.classList.add('active');
-            document.body.style.overflow = 'hidden';
         }
 
         function closeDetailLayer() {
             document.getElementById('detail-layer').classList.remove('active');
-            // 如果列表页没打开，才恢复滚动
+            // 如果列表页也没开，才恢复滚动
             if(!document.getElementById('list-layer').classList.contains('active')) {
                 document.body.style.overflow = '';
             }
